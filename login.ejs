@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo"><i class="fa-solid fa-circle-nodes"></i> Studia</div>
+        <nav>
+            <a herf="/">Home</a>
+            <a href="/features">Features</a>
+            <a href="/pricing">Pricing</a>
+            <a href="/support">Support</a>
+            <form action="/getfetures" method="get">
+                <button method="GET" class="btn get-started">Get Started</button>
+            </form>
+            <form action="/login" method="get">
+                <button class="btn login">Log In</button>
+            </form>
+
+        </nav>
+    </header>
+
+    <!-- Login Form -->
+    <div class="login-container">
+        <h2>Welcome back</h2>
+        <form action="/login" method="post">
+            <label for="username">Username or Email</label>
+            <input name="email" type="text" id="username" placeholder="Enter your username or email">
+
+            <label for="password">Password</label>
+            <input name="password" type="password" id="password" placeholder="Enter your password">
+
+            <a href="#" class="forgot">Forgot Password?</a>
+
+            <button type="submit" class="btn">Log In</button>
+        </form>
+        <p class="signup-text">
+            Don’t have an account? <a href="#">Sign Up</a>
+        </p>
+    </div>
+</body>
+
+</html>

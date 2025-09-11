@@ -1,0 +1,159 @@
+:root {
+  --bg-color: #121212;
+  --sidebar-bg: #1e1e1e;
+  --card-bg: #282828;
+  --text-color: #e0e0e0;
+  --secondary-text: #b0b0b0;
+  --accent-color: #3b82f6;
+  --green-dot: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Container for sidebar + content */
+.container {
+  display: flex;
+  width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: var(--sidebar-bg);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.user-info img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  border: 2px solid var(--accent-color);
+}
+
+.user-info h3 {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.user-info p {
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+}
+
+.nav-menu {
+  list-style: none;
+}
+
+.nav-item {
+  margin-bottom: 1rem;
+}
+
+.nav-item a {
+  display: flex;
+  align-items: center;
+  color: var(--secondary-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.nav-item a:hover,
+.nav-item a.active {
+  color: var(--text-color);
+  background-color: var(--card-bg);
+}
+
+.nav-item a.active {
+  color: var(--accent-color);
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.nav-item a i {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Main Content */
+.main-content {
+  flex-grow: 1;
+  padding: 2rem 3rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background-color: #303030;
+}
+
+.card i {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+  margin-top: 0.3rem;
+}
+
+.card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: var(--secondary-text);
+  line-height: 1.4;
+}

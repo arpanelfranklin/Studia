@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-minimal {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-active {
+            background: #1e293b;
+            color: white;
+        }
+
+        .gradient-minimal {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+    </style>
+</head>
+
+<body class="gradient-minimal min-h-screen">
+    <!-- Navigation -->
+    <nav class="glass-effect sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                        <div class="w-4 h-4 bg-slate-800 rounded-sm"></div>
+                    </div>
+                    <span class="text-white font-semibold text-lg">Studia</span>
+                </div>
+                <div class="flex space-x-2">
+                    <form action="/login"><button id="homeBtn"
+                            class="nav-active px-4 py-2 rounded-md text-sm font-medium transition-all duration-200">
+                            Home
+                        </button></form>
+                    <form action="/timetable">
+                        <button id="timetableBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Timetable
+                        </button>
+                    </form>
+                    <form action="/assignments">
+                        <button id="assignmentsBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Assignments
+                        </button>
+                    </form>
+                    <form action="/grades">
+                        <button id="gradesBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Grades
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <div id="homeSection" class="max-w-6xl mx-auto px-6 py-12">
+        <!-- Welcome Header -->
+        <div class="mb-12">
+            <h1 class="text-3xl font-light text-white mb-2">Good morning, <%= studentData.name %>
+            </h1>
+            <p class="text-white/60">Here's what's happening today</p>
+        </div>
+
+        <!-- Student Profile Card -->
+        <div class="card-minimal rounded-xl p-8 mb-8">
+            <div class="flex items-center space-x-6">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center">
+                    <span class="text-slate-600 text-2xl font-medium">AS</span>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-semibold text-slate-900 mb-1">
+                        <%= studentData.name %>
+                    </h2>
+                    <p class="text-slate-500 mb-4">
+                        <%= studentData.branchName %> • <%= studentData.year%> Year
+                    </p>
+                    <div class="grid grid-cols-4 gap-6">
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Student ID</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.student_id%>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">CGPA</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.cgpa %>/10
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Semester</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.semester %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Attendance</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.attendance_percentage %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">College</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.college %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Program Valadity Date</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.program_validity_date.toISOString().split("T")[0]; %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Date of Birth</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.date_of_birth.toISOString().split("T")[0]; %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Age</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.age %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Gender</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.gender %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Father's Name</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.fathers_name %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Mother's Name</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.mothers_name %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Address</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.address %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">City</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.city %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">State</p>
+                            <p class="text-slate-900 font-medium">
+                                <%= studentData.state %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
