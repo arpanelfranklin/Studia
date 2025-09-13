@@ -106,7 +106,7 @@ app.post("/login", (req, res) => {
 
       console.log(studentData);
 
-      res.render("studentDashboard.ejs", {
+      res.render("profile.ejs", {
         studentData,
       });
     } else {
