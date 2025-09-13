@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studia - Student Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-indigo-600">Studia</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/"
+                            class="text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="/timetable"
+                            class="text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Timetable</a>
+                        <a href="/grades"
+                            class="text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Grades</a>
+                        <a href="/assignments"
+                            class="text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Assignments</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold">Student Profile</h2>
+            <p class="text-indigo-100 mt-2">Personal and Academic Information</p>
+        </div>
+    </div>
+
+    <!-- Student Profile Section -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Profile Header -->
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+                <div class="flex items-center space-x-6">
+                    <div
+                        class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="text-white">
+                        <h3 class="text-2xl font-bold">
+                            <%= studentData.name %>
+                        </h3>
+                        <p class="text-indigo-100">
+                            <%= studentData.branchName %>
+                        </p>
+                        <p class="text-indigo-100">Student ID: <%= studentData.student_id%>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Details -->
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Personal Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Personal
+                            Information</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Full Name:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.name %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Date of Birth:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.date_of_birth.toISOString().split("T")[0]; %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Gender:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.gender %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Blood Group:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.blood_group %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Phone Number:</span>
+                                <span class="text-gray-900">+91 <%= studentData.contact_no %></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Email:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.student_email_id %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Academic
+                            Information</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Course:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.branchName %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Current Semester:</span>
+                                <span class="text-gray-900 font-semibold text-indigo-600">
+                                    <%= studentData.semester %> Semester
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Academic Year:</span>
+                                <span class="text-gray-900 font-semibold text-indigo-600">
+                                    <%= studentData.year %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Current CGPA:</span>
+                                <span class="text-gray-900 font-semibold text-green-600">
+                                    <%= studentData.cgpa %>/10.0
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Admission Year:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.admission_year %>
+                                </span>
+                            </div>
+                            <!-- <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Roll Number:</span>
+                                <span class="text-gray-900">22CSE045</span>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <!-- Family Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Family
+                            Information</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Father's Name:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.fathers_name %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Father's Occupation:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.fathers_occupation %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Mother's Name:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.mothers_name%>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Mother's Occupation:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.mothers_occupation %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Guardian Contact:</span>
+                                <span class="text-gray-900">+91 <%= studentData.guardian_phone_number %></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Address
+                            Information</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-gray-600 font-medium block mb-1">Permanent Address:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.permanent_address %>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 font-medium block mb-1">Current Address:</span>
+                                <span class="text-gray-900">
+                                    <%= studentData.current_address %>
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Emergency Contact:</span>
+                                <span class="text-gray-900">+91 <%= studentData.emergency_contact_number %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Details -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Additional Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-indigo-600">
+                                <%= studentData.year %>
+                            </div>
+                            <div class="text-gray-600 text-sm">Current Year</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600">
+                                <%= studentData.credits %>/<%= studentData.totalCredits %>
+                            </div>
+                            <div class="text-gray-600 text-sm">Credits Completed</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-600">
+                                <%= studentData.program_validity_date.toISOString().split("T")[0]; %>
+                            </div>
+                            <div class="text-gray-600 text-sm">Expected Graduation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
