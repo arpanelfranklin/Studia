@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studia - Login Error</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .coral-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .teal-gradient {
+            background: linear-gradient(135deg, #4ECDC4 0%, #6EE7E0 100%);
+        }
+
+        .coral-teal-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-shadow {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-coral {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-coral:hover {
+            background: linear-gradient(135deg, #FF5252 0%, #FF7575 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-teal {
+            background: linear-gradient(135deg, #4ECDC4 0%, #6EE7E0 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-teal:hover {
+            background: linear-gradient(135deg, #3BB5B0 0%, #5DD9D2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(78, 205, 196, 0.4);
+        }
+
+        .accent-border {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, #FF6B6B, #4ECDC4) border-box;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <!-- Error Card -->
+        <div class="bg-white rounded-3xl card-shadow p-10 text-center fade-in accent-border">
+            <!-- Logo/Brand -->
+            <div class="mb-6">
+                <div class="coral-teal-gradient w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                    <div class="logo" style="border-radius: 10px; ">
+                        <img src="logo.png" alt="" style="border-radius: 10px;">
+                    </div>
+                </div>
+                <h1
+                    class="text-3xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent mb-2">
+                    Studia</h1>
+                <div class="w-20 h-1 coral-teal-gradient mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Error Icon -->
+            <div class="mb-6">
+                <div
+                    class="w-24 h-24 bg-gradient-to-br from-red-100 to-red-50 rounded-full flex items-center justify-center mx-auto mb-4 shake border-4 border-red-200">
+                    <svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Login Failed</h2>
+                <p class="text-lg text-gray-600 font-medium">Wrong ID or Password</p>
+            </div>
+
+            <!-- Error Message -->
+            <div class="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-xl p-4 mb-6">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-red-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="text-left">
+                        <p class="text-red-800 font-semibold text-sm">Authentication Error</p>
+                        <p class="text-red-700 text-sm">The Student ID or Password you entered is incorrect. Please
+                            check your credentials and try again.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                <form action="/">
+                    <button type="submit"
+                        class="w-full btn-coral text-white font-semibold py-3 px-6 rounded-xl text-lg">
+                        Try Again
+                    </button>
+                </form>
+
+
+
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-8">
+                <p class="text-gray-600 text-sm font-medium">© 2024 Studia - University Student Portal</p>
+                <p class="text-gray-500 text-xs mt-1">Secure • Reliable • Always Available</p>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

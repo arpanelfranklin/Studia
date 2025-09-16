@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studia - Student Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .coral-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .teal-gradient {
+            background: linear-gradient(135deg, #4ECDC4 0%, #6EE7E0 100%);
+        }
+
+        .coral-teal-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(255, 107, 107, 0.15);
+            border-color: #FF6B6B;
+        }
+
+        .floating-label {
+            transition: all 0.3s ease;
+        }
+
+        .input-group:focus-within .floating-label {
+            transform: translateY(-20px) scale(0.85);
+            color: #FF6B6B;
+        }
+
+        .input-group input:not(:placeholder-shown)+.floating-label {
+            transform: translateY(-20px) scale(0.85);
+            color: #64748b;
+        }
+
+        .card-shadow {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-coral {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-coral:hover {
+            background: linear-gradient(135deg, #FF5252 0%, #FF7575 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(255, 107, 107, 0.4);
+        }
+
+        .accent-border {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, #FF6B6B, #4ECDC4) border-box;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <!-- Login Card -->
+        <div class="bg-white rounded-3xl card-shadow p-10 fade-in accent-border">
+            <!-- Logo/Brand -->
+            <div class="text-center mb-8">
+                <div class="text-5xl mx-auto mb-4 flex items-center justify-center">
+                    <i
+                        class="fa-solid fa-circle-nodes bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent"></i>
+                </div>
+                <h1
+                    class="text-4xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent mb-2">
+                    Studia</h1>
+                <div class="w-20 h-1 coral-teal-gradient mx-auto rounded-full mb-4"></div>
+                <h2 class="text-2xl font-semibold text-gray-800">Faculty Login</h2>
+                <p class="text-gray-600 mt-2">Access your academic portal</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-6" action="/facultylogin" method="post">
+                <!-- Student ID Field -->
+                <div class="input-group relative">
+                    <input name="email" type="text" id="facultyId" placeholder=" "
+                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none transition-all duration-300 input-focus bg-gray-50 focus:bg-white text-gray-800"
+                        required>
+                    <label for="facultyId"
+                        class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none">
+                        Faculty Email ID
+                    </label>
+                </div>
+
+                <!-- Password Field -->
+                <div class="input-group relative">
+                    <input type="password" id="password" name="password" placeholder=" "
+                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none transition-all duration-300 input-focus bg-gray-50 focus:bg-white pr-14 text-gray-800"
+                        required>
+                    <label for="password"
+                        class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none">
+                        Password
+                    </label>
+                    <button type="button" onclick="togglePassword()"
+                        class="absolute right-4 top-4 text-gray-400 hover:text-red-400 transition-colors">
+                        <svg id="eyeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="w-full btn-coral text-white font-semibold py-4 px-6 rounded-xl text-lg">
+                    <span id="loginText">Sign In</span>
+                    <svg id="loadingIcon" class="hidden animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </button>
+            </form>
+
+
+
+
+
+            <!-- Help Section -->
+            <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                <p class="text-sm text-gray-500 mb-3">Are you student?
+                    <a href="/login" class="text-red-400 hover:text-red-500 font-semibold transition-colors">Student
+                        Login</a>
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Footer -->
+            <div class="text-center mt-8">
+                <p class="text-gray-600 text-sm font-medium">© 2025 Studia - University Student Portal</p>
+                <p class="text-gray-500 text-xs mt-1">Secure • Reliable • Always Available</p>
+            </div>
+        </div>
+        <script>
+            document.getElementById('loginForm').addEventListener('submit', function (e) {
+                // e.preventDefault();
+
+                const studentId = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+            }
+            )
+            function togglePassword() {
+                const passwordInput = document.getElementById('password');
+                const eyeIcon = document.getElementById('eyeIcon');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                `;
+                } else {
+                    passwordInput.type = 'password';
+                    eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+                }
+            }
+        </script>
+
+</body>
+
+</html>
