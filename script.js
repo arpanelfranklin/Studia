@@ -12,38 +12,16 @@ const connection = mysql.createConnection({
   password: "arpanelisbest",
   port: 8080,
 });
+const session = require("express-session");
 
-// Generates fake 20 user data
-// let registeredUser = [];
-
-// for (let i = 1; i <= 20; i++) {
-//   let randomuser = () => ({
-//     // userId: faker.string.uuid(),
-//     username: faker.internet.username(),
-//     email: faker.internet.email(),
-//     // avatar: faker.image.avatar(),
-//     password: faker.internet.password(),
-//     // birthdate: faker.date.birthdate(),
-//     // registeredAt: faker.date.past(),
-//   });
-
-//   registeredUser.push(randomuser());
-// }
-
-// for (let i = 0; i < registeredUser.length; i++) {
-//   let user = [
-//     registeredUser[i]["username"],
-//     registeredUser[i]["email"],
-//     registeredUser[i]["password"],
-//   ];
-//   let q =
-//     "INSERT INTO registeredUser (Username,email,passwords) VALUES (?,?,?)";
-//   connection.query(q, user, (error) => {
-//     if (error) {
-//       console.log(error);
-//     }
-//   });
-// }
+app.use(
+  session({
+    secret: "supersecretkey", // change this to a strong secret
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
+  })
+);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -56,14 +34,43 @@ app.listen(port, (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.render("studentlogin.ejs");
+  res.render("newstudentlogin.ejs");
 });
 
-app.get("/Features", (req, res) => {
-  res.send("you are at features points");
+app.get("/curriculum", (req, res) => {
+  res.render("curriculum.ejs");
 });
+app.post("/facultylogin", (req, res) => {
+  const { email, password } = req.body;
+  console.log(email, password);
+  const q = `
+    SELECT 
+      f.*
+    FROM facultylogin f
+    WHERE f.email = ? AND f.password = ?;
+  `;
+
+  connection.query(q, [email, password], (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.send("Database error");
+    }
+
+    if (results.length > 0) {
+      const facultyData = results[0];
+
+      // ✅ Store logged-in faculty in session
+      req.session.faculty = facultyData;
+
+      res.redirect("/facultydashboard");
+    } else {
+      res.render("wrongidpass.ejs");
+    }
+  });
+});
+
 app.get("/facultylogin", (req, res) => {
-  res.render("faculyLogin.ejs");
+  res.render("newfacultylogin.ejs");
 });
 app.get("/pricing", (req, res) => {
   res.send("at pricing ");
@@ -104,25 +111,50 @@ app.post("/login", (req, res) => {
     if (results.length > 0) {
       const studentData = results[0];
 
-      console.log(studentData);
+      // ✅ Store logged-in user in session
+      req.session.student = studentData;
 
-      res.render("profile.ejs", {
-        studentData,
-      });
+      res.redirect("/home");
     } else {
-      res.send("Invalid email or password");
+      res.render("wrongidpass.ejs");
     }
   });
 });
 
+app.get("/home", (req, res) => {
+  if (!req.session.student) {
+    return res.redirect("/"); // not logged in, redirect to login
+  }
+
+  let q = "SELECT * FROM timetable";
+  connection.query(q, (error, rows) => {
+    if (error) {
+      console.log(error);
+      return res.send("SOME ERROR IN DATABASE");
+    } else {
+      console.log(rows);
+
+      res.render("studentDashboard.ejs", {
+        studentData: req.session.student,
+        result: rows, // ✅ rows is an array
+      });
+    }
+  });
+});
+
+app.get("/physics", (req, res) => {
+  res.render("physics.ejs");
+});
+
 app.get("/timetable", (req, res) => {
+  if (!req.session.student) return res.redirect("/"); // redirect if not logged in
+
   let q = "SELECT t.* from timetable t join batch b ON b.batch_id=t.batch_id";
   connection.query(q, (error, result) => {
     if (error) {
       res.send(error);
     } else {
-      console.log(result);
-      res.render("timetable.ejs", { results: result });
+      res.render("newtimetable.ejs", { results: result });
     }
   });
 });
@@ -141,29 +173,29 @@ app.get("/facultytimetable", (req, res) => {
       res.send("SOME ERROR IN DATABASE");
     } else {
       console.log(result);
-      res.render("facultytimetable.ejs", { result });
+      res.render("facultytimetablenew.ejs", { result });
     }
   });
 });
 app.post("/addtimetable", (req, res) => {
-  // form sends urlencoded -> works if express.urlencoded() is enabled
   const data = req.body;
 
-  // map form field names to DB column names
   const values = [
     data.batch_id,
-    data.day_Of_Week, // enum('Monday','Tuesday',...)
+    data.day_of_week, // use lowercase (check your form name too)
     data.subject_name,
     data.start_time,
     data.end_time,
     data.classroom,
     data.faculty_name,
-    data.type,
+    data.faculty_id, // required column
+    data.type, // char(1), e.g., 'L', 'P', 'T'
   ];
+  console.log(values);
 
   const q = `INSERT INTO timetable 
-    (batch_id, day_of_week, subject_name, start_time, end_time, classroom, faculty_name, type) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    (batch_id, day_of_week, subject_name, start_time, end_time, classroom, faculty_name, faculty_id, type) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   console.log("Query:", q);
   console.log("Values:", values);
@@ -181,6 +213,7 @@ app.post("/addtimetable", (req, res) => {
 // Check classroom conflicts
 app.get("/checkconflict", (req, res) => {
   const { day_of_week, start_time, end_time, classroom } = req.query;
+  console.log(req.query);
 
   const q = `
     SELECT * FROM timetable
@@ -216,4 +249,8 @@ app.get("/checkconflict", (req, res) => {
       }
     }
   );
+});
+
+app.get("/facultydashboard", (req, res) => {
+  res.render("facultydashboard.ejs");
 });
