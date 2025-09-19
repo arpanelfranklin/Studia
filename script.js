@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 const path = require("path");
 const mysql = require("mysql2");
-const { faker } = require("@faker-js/faker");
+
 const database = require("mime-db");
 const connection = mysql.createConnection({
   host: "localhost",
@@ -177,57 +177,34 @@ app.get("/facultytimetable", (req, res) => {
     }
   });
 });
+
 app.post("/addtimetable", (req, res) => {
-  const data = req.body;
+  const {
+    day_of_week,
+    start_time,
+    end_time,
+    classroom,
+    subject_name,
+    faculty_id,
+    faculty_name,
+    type,
+    batch_id,
+  } = req.body;
 
-  const values = [
-    data.batch_id,
-    data.day_of_week, // use lowercase (check your form name too)
-    data.subject_name,
-    data.start_time,
-    data.end_time,
-    data.classroom,
-    data.faculty_name,
-    data.faculty_id, // required column
-    data.type, // char(1), e.g., 'L', 'P', 'T'
-  ];
-  console.log(values);
-
-  const q = `INSERT INTO timetable 
-    (batch_id, day_of_week, subject_name, start_time, end_time, classroom, faculty_name, faculty_id, type) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-  console.log("Query:", q);
-  console.log("Values:", values);
-
-  connection.query(q, values, (err, result) => {
-    if (err) {
-      console.error("SQL Error:", err);
-      return res.status(500).json(err);
-    }
-    res.render("timetableconfirm.ejs");
-  });
-});
-
-// Check timetable conflicts
-// Check classroom conflicts
-app.get("/checkconflict", (req, res) => {
-  const { day_of_week, start_time, end_time, classroom } = req.query;
-  console.log(req.query);
-
-  const q = `
+  // Step 1: Check conflict
+  const qCheck = `
     SELECT * FROM timetable
     WHERE day_of_week = ?
       AND classroom = ?
       AND (
-        (start_time < ? AND end_time > ?)   -- new start is inside existing
-        OR (start_time < ? AND end_time > ?) -- new end is inside existing
-        OR (start_time >= ? AND end_time <= ?) -- completely inside new slot
+        (start_time < ? AND end_time > ?)   -- new start inside existing
+        OR (start_time < ? AND end_time > ?) -- new end inside existing
+        OR (start_time >= ? AND end_time <= ?) -- existing fully inside new
       )
   `;
 
   connection.query(
-    q,
+    qCheck,
     [
       day_of_week,
       classroom,
@@ -241,16 +218,55 @@ app.get("/checkconflict", (req, res) => {
     (error, result) => {
       if (error) {
         console.log(error);
-        res.status(500).send("Database error while checking conflicts.");
-      } else if (result.length > 0) {
-        res.json({ conflict: true, conflicts: result });
-      } else {
-        res.json({ conflict: false, message: "No conflicts found ✅" });
+        return res.status(500).send("Database error while checking conflicts.");
       }
+
+      if (result.length > 0) {
+        // Conflict found
+        return res.render("conflict", {
+          error: "Conflict detected! Please choose another slot.",
+          conflicts: result,
+        });
+      }
+
+      // Step 2: Insert since no conflict
+      const qInsert = `
+        INSERT INTO timetable (day_of_week, start_time, end_time, classroom, subject_name, faculty_id, faculty_name, type, batch_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      connection.query(
+        qInsert,
+        [
+          day_of_week,
+          start_time,
+          end_time,
+          classroom,
+          subject_name,
+          faculty_id,
+          faculty_name,
+          type,
+          batch_id,
+        ],
+        (err2) => {
+          if (err2) {
+            console.log(err2);
+            res.render("conflict");
+            return res.status(500).send("Error inserting timetable entry.");
+          }
+
+          res.render("timetableconfirm", {
+            success: "Timetable entry added successfully ✅",
+          });
+        }
+      );
     }
   );
 });
 
 app.get("/facultydashboard", (req, res) => {
   res.render("facultydashboard.ejs");
+});
+app.get("/conflict", (req, res) => {
+  res.render("conflict");
 });
