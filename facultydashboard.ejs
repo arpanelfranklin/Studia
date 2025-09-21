@@ -303,7 +303,7 @@
                         </div>
                     </a>
 
-                    <a href="#"
+                    <a href="/facultytimetable"
                         class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
                         onclick="setActive(this)">
                         <div class="flex items-center space-x-2">
@@ -312,11 +312,11 @@
                                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                                 </path>
                             </svg>
-                            <span>Courses</span>
+                            <span>Time table</span>
                         </div>
                     </a>
 
-                    <a href="#"
+                    <a href="/markattendance"
                         class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
                         onclick="setActive(this)">
                         <div class="flex items-center space-x-2">
@@ -325,7 +325,7 @@
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                                 </path>
                             </svg>
-                            <span>Students</span>
+                            <span>Mark attendance</span>
                         </div>
                     </a>
 
@@ -345,83 +345,10 @@
 
                 <!-- Right Side Items -->
                 <div class="flex items-center space-x-4">
-                    <!-- Search Bar -->
-                    <div class="search-container hidden lg:block">
-                        <div class="relative">
-                            <input type="text" placeholder="Search students, courses..."
-                                class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-400 focus:border-transparent transition-all"
-                                onkeyup="handleSearch(this.value)" onfocus="showSearchResults()"
-                                onblur="hideSearchResults()">
-                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </div>
-                        <div id="searchResults" class="search-results">
-                            <div class="p-4">
-                                <div class="text-sm text-gray-600 mb-2">Quick Actions</div>
-                                <div class="space-y-2">
-                                    <a href="#"
-                                        class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Grade
-                                        Assignments</a>
-                                    <a href="#"
-                                        class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Mark
-                                        Attendance</a>
-                                    <a href="#"
-                                        class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">View
-                                        Student List</a>
-                                    <a href="#"
-                                        class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Course
-                                        Materials</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Notifications -->
-                    <div class="relative">
-                        <button onclick="toggleNotifications()"
-                            class="p-2 text-gray-600 hover:text-red-400 transition-colors relative">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 17h5l-5 5v-5zM10.07 2.82l3.93 3.93-3.93 3.93-3.93-3.93 3.93-3.93zM2.82 10.07l3.93 3.93-3.93 3.93L2.82 14l3.93-3.93z">
-                                </path>
-                            </svg>
-                            <span class="notification-badge">5</span>
-                        </button>
-                        <div id="notificationDropdown"
-                            class="dropdown absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border">
-                            <div class="p-4 border-b">
-                                <h3 class="font-semibold text-gray-800">Notifications</h3>
-                            </div>
-                            <div class="max-h-64 overflow-y-auto">
-                                <div class="p-3 border-b hover:bg-gray-50">
-                                    <div class="text-sm font-medium text-gray-800">Assignment Submissions</div>
-                                    <div class="text-xs text-gray-600">15 new submissions for Data Structures Lab</div>
-                                    <div class="text-xs text-gray-400 mt-1">30 minutes ago</div>
-                                </div>
-                                <div class="p-3 border-b hover:bg-gray-50">
-                                    <div class="text-sm font-medium text-gray-800">Grade Deadline</div>
-                                    <div class="text-xs text-gray-600">Mid-term grades due tomorrow</div>
-                                    <div class="text-xs text-gray-400 mt-1">2 hours ago</div>
-                                </div>
-                                <div class="p-3 border-b hover:bg-gray-50">
-                                    <div class="text-sm font-medium text-gray-800">Student Query</div>
-                                    <div class="text-xs text-gray-600">New message from Arpanel Franklin</div>
-                                    <div class="text-xs text-gray-400 mt-1">4 hours ago</div>
-                                </div>
-                                <div class="p-3 hover:bg-gray-50">
-                                    <div class="text-sm font-medium text-gray-800">Faculty Meeting</div>
-                                    <div class="text-xs text-gray-600">Department meeting scheduled for tomorrow</div>
-                                    <div class="text-xs text-gray-400 mt-1">1 day ago</div>
-                                </div>
-                            </div>
-                            <div class="p-3 border-t">
-                                <button class="text-sm text-red-400 hover:text-red-600">View All Notifications</button>
-                            </div>
-                        </div>
-                    </div>
+
+
+
 
                     <!-- User Profile Dropdown -->
                     <div class="relative">
@@ -429,7 +356,7 @@
                             class="flex items-center space-x-2 p-2 text-gray-600 hover:text-red-400 transition-colors">
                             <div
                                 class="w-8 h-8 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                                DR
+                                <i class="fa-solid fa-user"></i>
                             </div>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -566,25 +493,20 @@
             <div class="bg-white rounded-2xl card-shadow p-6 coral-teal-gradient text-white">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div class="mb-4 md:mb-0">
-                        <h2 class="text-3xl font-bold mb-2">Good morning, Dr. Kumar! 👨‍🏫</h2>
-                        <p class="text-white/90 mb-2">Computer Science Department • Bennett University</p>
-                        <p class="text-white/80 text-sm">Faculty ID: FAC001 • Associate Professor • 8 years experience
+                        <h2 class="text-3xl font-bold mb-2">Good morning,<%= fullFacultyData.dashboard.name %>
+                                ! 👨‍🏫
+                        </h2>
+                        <p class="text-white/90 mb-2">
+                            <%= fullFacultyData.dashboard. department %>
+                                Department • Bennett University
+                        </p>
+                        <p class="text-white/80 text-sm">Faculty ID: <%= fullFacultyData.dashboard.faculty_id %>
+                                • <%= fullFacultyData.dashboard.position %>
+                                    • <%= fullFacultyData.dashboard.experience %>
+                                        years experience
                         </p>
                     </div>
-                    <div class="flex space-x-6">
-                        <div class="text-center">
-                            <div class="text-3xl font-bold">4</div>
-                            <div class="text-white/80 text-sm">Active Courses</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold">156</div>
-                            <div class="text-white/80 text-sm">Total Students</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold">12</div>
-                            <div class="text-white/80 text-sm">Pending Tasks</div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -592,11 +514,11 @@
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="stat-card card-shadow hover-lift fade-in">
-                <div class="text-3xl font-bold coral-teal-gradient bg-clip-text text-transparent mb-2">85%</div>
-                <div class="text-gray-600 text-sm mb-3">Average Attendance</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 85%"></div>
+                <div class="text-3xl font-bold coral-teal-gradient bg-clip-text text-transparent mb-2">
+                    <%= fullFacultyData.dashboard.leaves_taken_per_month %>
                 </div>
+                <div class="text-gray-600 text-sm mb-3">Total leave taken</div>
+                <div class="text-xs text-gray-500">taken this month</div>
             </div>
 
             <div class="stat-card card-shadow hover-lift fade-in">
@@ -612,7 +534,9 @@
             </div>
 
             <div class="stat-card card-shadow hover-lift fade-in">
-                <div class="text-3xl font-bold coral-teal-gradient bg-clip-text text-transparent mb-2">4.9</div>
+                <div class="text-3xl font-bold coral-teal-gradient bg-clip-text text-transparent mb-2">
+                    <%= fullFacultyData.dashboard.rating %>
+                </div>
                 <div class="text-gray-600 text-sm mb-3">Rating</div>
                 <div class="text-xs text-gray-500">Student feedback</div>
             </div>
@@ -626,14 +550,17 @@
                 <div class="dashboard-card card-shadow hover-lift fade-in">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="action-button" onclick="markAttendance()">
-                            <svg class="w-8 h-8 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <div class="text-sm font-medium text-gray-800">Mark Attendance</div>
-                        </div>
+                        <a href="/markattendance">
+                            <div class="action-button cursor-pointer">
+                                <svg class="w-8 h-8 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div class="text-sm font-medium text-gray-800">Mark Attendance</div>
+                            </div>
+                        </a>
+
 
                         <div class="action-button" onclick="gradeAssignments()">
                             <svg class="w-8 h-8 text-green-500 mx-auto mb-2" fill="none" stroke="currentColor"
@@ -654,16 +581,16 @@
                             <div class="text-sm font-medium text-gray-800">Schedule Timetable</div>
                         </a>
 
-
-                        <div class="action-button" onclick="viewStudents()">
+                        <a href="/applyleave" class="action-button">
                             <svg class="w-8 h-8 text-purple-500 mx-auto mb-2" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                                 </path>
                             </svg>
-                            <div class="text-sm font-medium text-gray-800">View Students</div>
-                        </div>
+                            <div class="text-sm font-medium text-gray-800">Apply leave</div>
+                        </a>
+
                     </div>
                 </div>
 
@@ -676,92 +603,8 @@
 
             <!-- Right Column -->
             <div class="space-y-6">
-                <!-- Today's Schedule -->
-                <div class="dashboard-card card-shadow hover-lift fade-in">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">Today's Schedule</h3>
-                    <div class="space-y-3">
-                        <div class="schedule-item bg-blue-50">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="font-medium text-gray-800">Data Structures Lab</div>
-                                    <div class="text-sm text-gray-600">Room: Lab 2 • 45 students</div>
-                                </div>
-                                <div class="text-sm text-gray-600">2:00 PM</div>
-                            </div>
-                        </div>
 
-                        <div class="schedule-item bg-green-50">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="font-medium text-gray-800">Faculty Meeting</div>
-                                    <div class="text-sm text-gray-600">Conference Room A</div>
-                                </div>
-                                <div class="text-sm text-gray-600">4:00 PM</div>
-                            </div>
-                        </div>
 
-                        <div class="schedule-item bg-orange-50">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="font-medium text-gray-800">Student Consultation</div>
-                                    <div class="text-sm text-gray-600">Office Hours</div>
-                                </div>
-                                <div class="text-sm text-gray-600">5:00 PM</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pending Tasks -->
-                <div class="dashboard-card card-shadow hover-lift fade-in">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">Pending Tasks</h3>
-                    <div class="space-y-3">
-                        <div class="task-item" style="border-left-color: #EF4444;">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-medium text-gray-800">Grade Mid-term Exams</div>
-                                    <div class="text-sm text-gray-600">Database Systems • 38 papers</div>
-                                </div>
-                                <span class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">Due Tomorrow</span>
-                            </div>
-                        </div>
-
-                        <div class="task-item" style="border-left-color: #F59E0B;">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-medium text-gray-800">Review Assignment Submissions</div>
-                                    <div class="text-sm text-gray-600">Machine Learning • 15 submissions</div>
-                                </div>
-                                <span class="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">Due in 2
-                                    days</span>
-                            </div>
-                        </div>
-
-                        <div class="task-item" style="border-left-color: #10B981;">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-medium text-gray-800">Prepare Lecture Materials</div>
-                                    <div class="text-sm text-gray-600">Software Engineering • Week 8</div>
-                                </div>
-                                <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Due in 3 days</span>
-                            </div>
-                        </div>
-
-                        <div class="task-item" style="border-left-color: #8B5CF6;">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-medium text-gray-800">Update Course Syllabus</div>
-                                    <div class="text-sm text-gray-600">Data Structures • Semester 3</div>
-                                </div>
-                                <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded">Due in 5
-                                    days</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Faculty Profile -->
                 <div class="dashboard-card card-shadow hover-lift fade-in">
@@ -771,64 +614,42 @@
                             class="w-20 h-20 coral-teal-gradient rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="text-white font-bold text-2xl">DR</span>
                         </div>
-                        <h4 class="font-bold text-gray-800">Dr. Rajesh Kumar</h4>
-                        <p class="text-gray-600 text-sm">Associate Professor</p>
+                        <h4 class="font-bold text-gray-800">
+                            <%= fullFacultyData.dashboard.name%>
+                        </h4>
+                        <p class="text-gray-600 text-sm">
+                            <%= fullFacultyData.dashboard.position %>
+                        </p>
                     </div>
                     <div class="space-y-2">
                         <div class="info-item">
                             <span class="text-gray-600">Department:</span>
-                            <span class="text-gray-800">Computer Science</span>
+                            <span class="text-gray-800">
+                                <%= fullFacultyData.dashboard.department %>
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="text-gray-600">Experience:</span>
-                            <span class="text-gray-800">8 years</span>
+                            <span class="text-gray-800">
+                                <%= fullFacultyData.dashboard.experience %> years
+                            </span>
                         </div>
-                        <div class="info-item">
-                            <span class="text-gray-600">Specialization:</span>
-                            <span class="text-gray-800">AI/ML, Databases</span>
-                        </div>
+
                         <div class="info-item">
                             <span class="text-gray-600">Email:</span>
-                            <span class="text-gray-800 text-xs">rajesh.kumar@bennett.edu.in</span>
+                            <span class="text-gray-800 text-xs">
+                                <%= fullFacultyData.dashboard.email %>
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="text-gray-600">Office:</span>
-                            <span class="text-gray-800">Room 304, CS Block</span>
+                            <span class="text-gray-800">
+                                <%= fullFacultyData.dashboard.cubical_number %>
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="dashboard-card card-shadow hover-lift fade-in">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">Recent Activity</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
-                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                            <div>
-                                <div class="font-medium text-gray-800">Graded Assignment</div>
-                                <div class="text-sm text-gray-600">Data Structures Lab Assignment 3 - 45 submissions
-                                </div>
-                                <div class="text-xs text-gray-500 mt-1">2 hours ago</div>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                            <div>
-                                <div class="font-medium text-gray-800">Attendance Marked</div>
-                                <div class="text-sm text-gray-600">Database Systems lecture - 36/38 present</div>
-                                <div class="text-xs text-gray-500 mt-1">Yesterday, 10:30 AM</div>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg">
-                            <div class="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                            <div>
-                                <div class="font-medium text-gray-800">New Assignment Created</div>
-                                <div class="text-sm text-gray-600">Machine Learning Project - Due next week</div>
-                                <div class="text-xs text-gray-500 mt-1">2 days ago</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

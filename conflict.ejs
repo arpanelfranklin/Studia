@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Conflict Warning - EduPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: '#FF6B6B',
+                        teal: '#4ECDC4'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .warning-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .conflict-item {
+            transition: all 0.3s ease;
+        }
+
+        .conflict-item:hover {
+            transform: translateX(4px);
+            background-color: #fef2f2;
+        }
+
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b-2 border-teal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-r from-coral to-teal rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">📚</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">EduPortal</h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#" class="text-gray-600 hover:text-coral transition-colors">Dashboard</a>
+                        <a href="#" class="text-gray-600 hover:text-coral transition-colors">Grades</a>
+                        <a href="#" class="text-gray-600 hover:text-coral transition-colors">Curriculum</a>
+                        <a href="#" class="text-coral font-medium">Schedule</a>
+                    </nav>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-600">Welcome back, Alex!</span>
+                        <div class="w-8 h-8 bg-teal rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-semibold">A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Warning Header -->
+        <div class="text-center mb-8">
+            <div class="warning-pulse w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-4xl">⚠️</span>
+            </div>
+            <h1 class="text-3xl font-bold text-red-600 mb-2">Schedule Conflict Detected!</h1>
+            <p class="text-gray-600 text-lg">We found conflicts with your existing timetable</p>
+        </div>
+
+        <!-- Main Warning Card -->
+        <div class="bg-white rounded-xl shadow-lg border-l-4 border-red-500 p-6 mb-6">
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🚫</span>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-2">Cannot Add New Class</h2>
+                    <p class="text-gray-600 mb-4">
+                        The class you're trying to add conflicts with your existing schedule.
+                        Please review the conflicts below and choose how you'd like to proceed.
+                    </p>
+
+                    <!-- New Class Info -->
+                    <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">📝 Class You're Adding:</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-blue-800">Advanced Database Systems</p>
+                                <p class="text-sm text-blue-600">CS 401 • Prof. Johnson</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium text-blue-800">Tuesday & Thursday</p>
+                                <p class="text-sm text-blue-600">2:00 PM - 3:30 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conflict Details -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <span class="text-2xl mr-2">⚡</span>
+                Scheduling Conflicts Found
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Conflict 1 -->
+                <div class="conflict-item border border-red-200 rounded-lg p-4 bg-red-50">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">💻</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-red-900">Software Engineering</h3>
+                                <p class="text-sm text-red-700">CS 350 • Prof. Smith</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium text-red-800">Tuesday</p>
+                            <p class="text-sm text-red-600">1:30 PM - 3:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm">
+                        <span class="bg-red-200 text-red-800 px-2 py-1 rounded text-xs">OVERLAP</span>
+                        <span class="text-red-700">30 minutes overlap on Tuesday (2:00 PM - 3:00 PM)</span>
+                    </div>
+                </div>
+
+                <!-- Conflict 2 -->
+                <div class="conflict-item border border-red-200 rounded-lg p-4 bg-red-50">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">🔬</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-red-900">Data Science Lab</h3>
+                                <p class="text-sm text-red-700">CS 380 • Prof. Davis</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium text-red-800">Thursday</p>
+                            <p class="text-sm text-red-600">2:00 PM - 4:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm">
+                        <span class="bg-red-200 text-red-800 px-2 py-1 rounded text-xs">COMPLETE OVERLAP</span>
+                        <span class="text-red-700">Full conflict on Thursday (2:00 PM - 3:30 PM)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resolution Options -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <span class="text-2xl mr-2">🔧</span>
+                Resolution Options
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Option 1 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-teal hover:bg-teal/5 transition-all cursor-pointer"
+                    onclick="selectOption(1)">
+                    <div class="flex items-start space-x-3">
+                        <input type="radio" name="resolution" id="option1" class="mt-1 text-teal focus:ring-teal">
+                        <div>
+                            <label for="option1" class="font-semibold text-gray-900 cursor-pointer">Find Alternative
+                                Section</label>
+                            <p class="text-sm text-gray-600 mt-1">Look for the same class at different times that don't
+                                conflict with your schedule.</p>
+                            <div class="mt-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Recommended</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option 2 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-coral hover:bg-coral/5 transition-all cursor-pointer"
+                    onclick="selectOption(2)">
+                    <div class="flex items-start space-x-3">
+                        <input type="radio" name="resolution" id="option2" class="mt-1 text-coral focus:ring-coral">
+                        <div>
+                            <label for="option2" class="font-semibold text-gray-900 cursor-pointer">Drop Conflicting
+                                Classes</label>
+                            <p class="text-sm text-gray-600 mt-1">Remove the conflicting classes from your schedule to
+                                make room for the new one.</p>
+                            <div class="mt-2">
+                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Caution
+                                    Required</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option 3 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-400 hover:bg-gray-50 transition-all cursor-pointer"
+                    onclick="selectOption(3)">
+                    <div class="flex items-start space-x-3">
+                        <input type="radio" name="resolution" id="option3"
+                            class="mt-1 text-gray-500 focus:ring-gray-400">
+                        <div>
+                            <label for="option3" class="font-semibold text-gray-900 cursor-pointer">Cancel
+                                Addition</label>
+                            <p class="text-sm text-gray-600 mt-1">Keep your current schedule unchanged and don't add the
+                                new class.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option 4 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-purple-400 hover:bg-purple-50 transition-all cursor-pointer"
+                    onclick="selectOption(4)">
+                    <div class="flex items-start space-x-3">
+                        <input type="radio" name="resolution" id="option4"
+                            class="mt-1 text-purple-500 focus:ring-purple-400">
+                        <div>
+                            <label for="option4" class="font-semibold text-gray-900 cursor-pointer">Contact Academic
+                                Advisor</label>
+                            <p class="text-sm text-gray-600 mt-1">Get help from your advisor to resolve scheduling
+                                conflicts and plan your semester.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button onclick="showAlternatives()"
+                class="bg-teal hover:bg-teal/90 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2">
+                <span>🔍</span>
+                <span>Find Alternative Sections</span>
+            </button>
+
+            <button onclick="proceedAnyway()"
+                class="bg-coral hover:bg-coral/90 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2">
+                <span>⚠️</span>
+                <span>Force Add (Override Conflicts)</span>
+            </button>
+
+            <button onclick="goBack()"
+                class="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2">
+                <span>↩️</span>
+                <span>Go Back</span>
+            </button>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-start space-x-3">
+                <span class="text-2xl">💡</span>
+                <div>
+                    <h3 class="font-semibold text-blue-900 mb-2">Need Help?</h3>
+                    <p class="text-blue-800 text-sm mb-2">
+                        If you're unsure about how to resolve these conflicts, consider:
+                    </p>
+                    <ul class="text-blue-700 text-sm space-y-1 ml-4">
+                        <li>• Checking if any classes are available online or hybrid</li>
+                        <li>• Looking at prerequisites to see if you can take classes in a different order</li>
+                        <li>• Contacting professors about attendance flexibility</li>
+                        <li>• Speaking with your academic advisor for personalized guidance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Alternative Sections -->
+    <div id="alternativesModal"
+        class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-900">Alternative Sections Available</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <span class="text-2xl">×</span>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="border border-green-200 rounded-lg p-4 bg-green-50">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 class="font-semibold text-green-900">Advanced Database Systems - Section B</h3>
+                            <p class="text-sm text-green-700">CS 401 • Prof. Wilson</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">Available</span>
+                    </div>
+                    <p class="text-green-800 mb-2">Monday & Wednesday • 10:00 AM - 11:30 AM</p>
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">
+                        Add This Section
+                    </button>
+                </div>
+
+                <div class="border border-green-200 rounded-lg p-4 bg-green-50">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 class="font-semibold text-green-900">Advanced Database Systems - Section C</h3>
+                            <p class="text-sm text-green-700">CS 401 • Prof. Johnson</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">Available</span>
+                    </div>
+                    <p class="text-green-800 mb-2">Friday • 1:00 PM - 4:00 PM</p>
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">
+                        Add This Section
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectOption(optionNumber) {
+            document.getElementById(`option${optionNumber}`).checked = true;
+        }
+
+        function showAlternatives() {
+            document.getElementById('alternativesModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('alternativesModal').classList.add('hidden');
+        }
+
+        function proceedAnyway() {
+            if (confirm('Are you sure you want to force add this class? This will create scheduling conflicts that may affect your attendance and performance.')) {
+                alert('Class added with conflicts. Please review your schedule carefully.');
+                // Redirect to schedule page
+                window.location.href = '#schedule';
+            }
+        }
+
+        function goBack() {
+            if (confirm('Are you sure you want to go back? Any changes will be lost.')) {
+                // Go back to previous page
+                history.back();
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('alternativesModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Prevent form submission on Enter key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'981986d856618af8',t:'MTc1ODI4OTU2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

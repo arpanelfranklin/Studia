@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Timetable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-minimal {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <nav class="glass-effect sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                        <div class="w-4 h-4 bg-slate-800 rounded-sm"></div>
+                    </div>
+                    <span class="text-white font-semibold text-lg">Studia</span>
+                </div>
+                <div class="flex space-x-2">
+                    <form action="/"><button id="homeBtn"
+                            class="nav-active px-4 py-2 rounded-md text-sm font-medium transition-all duration-200">
+                            Home
+                        </button></form>
+                    <form action="/timetable">
+                        <button id="timetableBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Timetable
+                        </button>
+                    </form>
+                    <form action="/assignments">
+                        <button id="assignmentsBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Assignments
+                        </button>
+                    </form>
+                    <form action="/grades">
+                        <button id="gradesBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Grades
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto py-10">
+        <h1 class="text-3xl font-bold text-center mb-8">Weekly Timetable</h1>
+
+        <% var days={}; (results || []).forEach(function(r) { if (!days[r.day_of_week]) days[r.day_of_week]=[];
+            days[r.day_of_week].push(r); }); var
+            weekDays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]; %>
+
+            <% weekDays.forEach(function(day) { %>
+                <div class="mb-10">
+                    <h2 class="text-xl font-semibold mb-4">
+                        <%= day %>
+                    </h2>
+
+                    <% if (days[day] && days[day].length> 0) { %>
+                        <div class="space-y-4">
+                            <% days[day].forEach(function(r) { %>
+                                <div class="bg-white p-5 rounded-xl shadow-sm flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <div
+                                            class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 font-bold">
+                                            <%= r.subject_name.charAt(0) %>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold">
+                                                <%= r.subject_name %>
+                                            </h3>
+                                            <p class="text-sm text-gray-500">
+                                                <%= r.faculty_name %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right text-sm text-gray-600 space-x-4">
+                                        <span>
+                                            <%= r.start_time %> - <%= r.end_time %>
+                                        </span>
+                                        <span>
+                                            <%= r.classroom %>
+                                        </span>
+                                        <span class="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
+                                            <%= r.type==='T' ? 'Tutorial' : r.type==='L' ? 'Lecture' : r.type %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <% }); %>
+                        </div>
+                        <% } else { %>
+                            <p class="text-gray-500 italic">No classes scheduled.</p>
+                            <% } %>
+                </div>
+                <% }); %>
+
+    </div>
+
+</body>
+
+</html>
