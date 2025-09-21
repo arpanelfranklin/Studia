@@ -3,8 +3,10 @@ const app = express();
 const port = 3000;
 const path = require("path");
 const mysql = require("mysql2");
-
+const ntpClient = require("ntp-client");
+const QRCode = require("qrcode");
 const database = require("mime-db");
+
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -40,38 +42,109 @@ app.get("/", (req, res) => {
 app.get("/curriculum", (req, res) => {
   res.render("curriculum.ejs");
 });
-app.post("/facultylogin", (req, res) => {
+
+app.post("/facultylogin", async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
-  const q = `
-    SELECT 
-      f.*
-    FROM facultylogin f
-    WHERE f.email = ? AND f.password = ?;
-  `;
+  try {
+    const loginResults = await new Promise((resolve, reject) => {
+      const q = "SELECT * FROM facultylogin WHERE email = ? AND password = ?";
+      connection.query(q, [email, password], (err, results) =>
+        err ? reject(err) : resolve(results)
+      );
+    });
 
-  connection.query(q, [email, password], (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.send("Database error");
+    if (loginResults.length === 0) {
+      return res.render("wrongidpass.ejs");
     }
 
-    if (results.length > 0) {
-      const facultyData = results[0];
+    const faculty = loginResults[0];
+    const facultyId = faculty.faculty_id;
 
-      // ✅ Store logged-in faculty in session
-      req.session.faculty = facultyData;
+    const [
+      dashboardResults,
+      leavesResults,
+      ratingsResults,
+      timetableResults,
+      totalClassrooms,
+    ] = await Promise.all([
+      new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT * FROM faculty_dashboard WHERE faculty_id = ?",
+          [facultyId],
+          (err, results) => (err ? reject(err) : resolve(results))
+        );
+      }),
+      new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT * FROM faculty_leaves WHERE faculty_id = ?",
+          [facultyId],
+          (err, results) => (err ? reject(err) : resolve(results))
+        );
+      }),
+      new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT * FROM faculty_ratings WHERE faculty_id = ?",
+          [facultyId],
+          (err, results) => (err ? reject(err) : resolve(results))
+        );
+      }),
+      new Promise((resolve, reject) => {
+        const q = `
+            SELECT t.*, c.classroom_id, c.capacity, c.resources
+            FROM timetable t
+            LEFT JOIN classrooms c ON t.classroom = c.room_number
+            WHERE t.faculty_id = ?;
+          `;
+        connection.query(q, [facultyId], (err, results) =>
+          err ? reject(err) : resolve(results)
+        );
+      }),
+      new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT COUNT(*) AS totalAvailable FROM classrooms",
+          (err, results) => (err ? reject(err) : resolve(results))
+        );
+      }),
+    ]);
 
+    const fullFacultyData = {
+      login: faculty,
+      dashboard: dashboardResults[0] || {},
+      leaves: leavesResults,
+      ratings: ratingsResults,
+      timetable: timetableResults,
+      totalClassroomsAvailable: totalClassrooms[0].totalAvailable || 0,
+    };
+
+    req.session.faculty = fullFacultyData;
+
+    // 🔑 Ensure session is saved before redirect
+    req.session.save((err) => {
+      if (err) console.log(err);
       res.redirect("/facultydashboard");
-    } else {
-      res.render("wrongidpass.ejs");
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Error fetching faculty data:", error);
+    res.send("Database error");
+  }
 });
 
 app.get("/facultylogin", (req, res) => {
   res.render("newfacultylogin.ejs");
 });
+function ensureFacultyLoggedIn(req, res, next) {
+  if (!req.session.faculty) {
+    return res.redirect("/facultylogin");
+  }
+  next();
+}
+
+app.get("/facultydashboard", ensureFacultyLoggedIn, (req, res) => {
+  res.render("facultydashboard", {
+    fullFacultyData: req.session.faculty,
+  });
+});
+
 app.get("/pricing", (req, res) => {
   res.send("at pricing ");
 });
@@ -80,9 +153,6 @@ app.get("/support", (req, res) => {
   res.send("at support ");
 });
 
-// app.get("/login", (req, res) => {
-//   res.render("studentlogin.ejs");
-// });
 app.get("/setting", (req, res) => {
   res.render("setting.ejs");
 });
@@ -164,18 +234,6 @@ app.get("/assignments", (req, res) => {
 });
 app.get("/grades", (req, res) => {
   res.render("grades.ejs");
-});
-app.get("/facultytimetable", (req, res) => {
-  let q = "select * from timetable";
-  connection.query(q, (error, result) => {
-    if (error) {
-      console.log(error);
-      res.send("SOME ERROR IN DATABASE");
-    } else {
-      console.log(result);
-      res.render("facultytimetablenew.ejs", { result });
-    }
-  });
 });
 
 app.post("/addtimetable", (req, res) => {
@@ -264,9 +322,214 @@ app.post("/addtimetable", (req, res) => {
   );
 });
 
-app.get("/facultydashboard", (req, res) => {
-  res.render("facultydashboard.ejs");
-});
 app.get("/conflict", (req, res) => {
   res.render("conflict");
+});
+
+function getIndiaTime(callback) {
+  ntpClient.getNetworkTime("pool.ntp.org", 123, (err, date) => {
+    if (err) {
+      console.error("❌ NTP Error:", err);
+      return callback(null);
+    }
+    // Convert UTC to IST (+5:30)
+    const istOffset = 5.5 * 60; // in minutes
+    const istDate = new Date(date.getTime() + istOffset * 60 * 1000);
+    callback(istDate);
+  });
+}
+
+async function backupAndClearTimetable() {
+  try {
+    console.log("Starting backup & clear timetable...");
+
+    await connection
+      .promise()
+      .query(`CREATE TABLE IF NOT EXISTS timetable_backup LIKE timetable;`);
+    console.log("Backup table ready.");
+
+    const [backupResult] = await connection
+      .promise()
+      .query(`INSERT INTO timetable_backup SELECT * FROM timetable;`);
+    console.log("Backup rows inserted:", backupResult.affectedRows);
+
+    const [deleteResult] = await connection
+      .promise()
+      .query(`DELETE FROM timetable;`);
+    console.log("Deleted rows:", deleteResult.affectedRows);
+    console.log("🗑️ Timetable cleared for the new week.");
+  } catch (err) {
+    console.error("❌ Error in backup & clear:", err);
+  }
+}
+
+// Check every minute
+setInterval(() => {
+  getIndiaTime((currentTime) => {
+    if (!currentTime) return;
+
+    const day = currentTime.getDay(); // 5 = Friday
+    const hours = currentTime.getHours(); // 23
+    const minutes = currentTime.getMinutes(); // 59
+
+    if (day === 5 && hours === 23 && minutes === 59) {
+      backupAndClearTimetable();
+    } else {
+      console.log(
+        `Waiting... Current IST: ${currentTime.toLocaleString("en-IN")}`
+      );
+    }
+  });
+}, 60 * 1000); // every 1 minute
+
+app.get("/facultytimetable", ensureFacultyLoggedIn, (req, res) => {
+  const q = "SELECT * FROM timetable WHERE faculty_id = ?";
+  connection.query(q, [req.session.faculty.login.faculty_id], (err, result) => {
+    if (err) return res.send("SOME ERROR IN DATABASE");
+
+    const q1 = "SELECT COUNT(*) AS totalClassrooms FROM classrooms";
+    connection.query(q1, (error, classroomResult) => {
+      if (error) return res.send("SOME ERROR IN DATABASE");
+
+      console.log("Timetable:", result);
+      console.log("Classrooms:", classroomResult);
+
+      res.render("facultytimetablenew", {
+        fullFacultyData: req.session.faculty,
+        result: result,
+        totalClassrooms: classroomResult[0].totalClassrooms,
+      });
+    });
+  });
+});
+
+let attendance = {}; // e.g., { studentId: true }
+app.get("/markattendance", async (req, res) => {
+  try {
+    // For demo, we generate a QR code pointing to "/attend?studentId=123"
+    const studentId = "123"; // In real app, generate unique ID for session/student
+    const urlToEncode = `http://localhost:${port}/attend?studentId=${studentId}`;
+
+    // Generate QR code as data URL
+    const qrDataUrl = await QRCode.toDataURL(urlToEncode, {
+      color: { dark: "#000000ff", light: "#F0EDEE" },
+    });
+
+    res.render("markattendance", { qrDataUrl });
+  } catch (err) {
+    console.error(err);
+    res.send("Error generating QR code");
+  }
+});
+// When the QR code is scanned, user goes to this route
+app.get("/attend", (req, res) => {
+  const studentId = req.query.studentId;
+  if (!studentId) return res.send("Invalid QR code");
+
+  // Mark attendance
+  attendance[studentId] = true;
+
+  res.send(`<h1 style="font-family:sans-serif;color:#07393C">
+    ✅ Attendance marked for Student ID: ${studentId}
+  </h1>`);
+});
+app.get("/attendance-status", (req, res) => {
+  res.json(attendance);
+});
+
+app.get("/applyleave", (req, res) => {
+  res.render("applyleave");
+});
+
+app.post("/applyleave", (req, res) => {
+  console.log(req.body);
+  const { faculty_id, facultyName, from_date, to_date, reason } = req.body;
+
+  // Basic validation
+  if (!faculty_id || !facultyName || !from_date || !to_date || !reason) {
+    return res.status(400).send("Please fill all required fields");
+  }
+
+  // Default leave_type if not provided
+  const type = "Other";
+
+  // Insert into DB
+  const q = `
+    INSERT INTO faculty_leaves
+    (faculty_id, facultyName, leave_type, reason, status, fromDate, toDate)
+    VALUES (?, ?, ?, ?, 'Pending', ?, ?)
+  `;
+
+  connection.query(
+    q,
+    [faculty_id, facultyName, type, reason, from_date, to_date],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting leave:", err);
+        return res.status(500).send("Database error while applying leave.");
+      }
+      res.render("timetableconfirm", {
+        message: "Leave application submitted successfully ✅",
+      });
+    }
+  );
+});
+
+// Fetch pending leaves
+app.get("/adminaccess", (req, res) => {
+  const q = "SELECT * FROM faculty_leaves WHERE status = 'Pending'";
+  connection.query(q, (err, results) => {
+    if (err) {
+      console.error("Error fetching leaves:", err);
+      return res.status(500).send("Database error while fetching leaves.");
+    }
+    res.render("adminaccess", { leaves: results });
+  });
+});
+
+// Approve leave
+app.post("/leaves/:id/approve", (req, res) => {
+  const leaveId = req.params.id;
+  const q = "UPDATE faculty_leaves SET status = 'Approved' WHERE leave_id = ?";
+  connection.query(q, [leaveId], (err, result) => {
+    if (err) {
+      console.error("Error approving leave:", err);
+      return res.status(500).json({ success: false });
+    }
+    res.json({ success: true, status: "Approved" });
+  });
+});
+
+// Reject leave
+app.post("/leaves/:id/reject", (req, res) => {
+  const leaveId = req.params.id;
+  const q = "UPDATE faculty_leaves SET status = 'Rejected' WHERE leave_id = ?";
+  connection.query(q, [leaveId], (err, result) => {
+    if (err) {
+      console.error("Error rejecting leave:", err);
+      return res.status(500).json({ success: false });
+    }
+    res.json({ success: true, status: "Rejected" });
+  });
+});
+
+app.post("/addbatch", (req, res) => {
+  const { batch_id, branch_id, year, semester, branch_code, mentor } = req.body;
+
+  const q = `
+    INSERT INTO batch (batch_id,branch_id, year, semester, branch_code, mentor)
+    VALUES (?,?, ?, ?, ?, ?)
+  `;
+
+  connection.query(
+    q,
+    [batch_id, branch_id, year, semester, branch_code || null, mentor || null],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting batch:", err);
+        return res.status(500).send("Database error while adding batch.");
+      }
+      res.redirect("/adminaccess"); // 👉 redirect to dashboard or wherever you want
+    }
+  );
 });
