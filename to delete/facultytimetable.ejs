@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Timetable Management - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-minimal {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .nav-active {
+            background: #1e293b;
+            color: white;
+        }
+
+        .card-minimal {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-focus:focus {
+            border-color: #1e293b;
+            box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
+        }
+
+        .form-animation {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lecture-badge {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        .tutorial-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .practical-badge {
+            background: linear-gradient(135deg, #10b981, #047857);
+        }
+    </style>
+</head>
+
+<body class="gradient-minimal min-h-screen">
+    <nav class="glass-effect sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                        <div class="w-4 h-4 bg-slate-800 rounded-sm"></div>
+                    </div>
+                    <span class="text-white font-semibold text-lg">Studia</span>
+                </div>
+                <div class="flex space-x-2">
+                    <form action="/"><button id="homeBtn"
+                            class="nav-active px-4 py-2 rounded-md text-sm font-medium transition-all duration-200">
+                            Home
+                        </button></form>
+                    <form action="/timetable">
+                        <button id="timetableBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Timetable
+                        </button>
+                    </form>
+                    <form action="/assignments">
+                        <button id="assignmentsBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Assignments
+                        </button>
+                    </form>
+                    <form action="/grades">
+                        <button id="gradesBtn"
+                            class="px-4 py-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-all duration-200">
+                            Grades
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Header -->
+        <div class="card-minimal rounded-xl p-6 mb-6 form-animation">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-semibold text-slate-900 mb-1">Timetable Management</h1>
+                    <p class="text-slate-600">Add and manage class schedules for different batches</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        + Add New Entry
+                    </button>
+                    <button
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        Export Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Timetable Form -->
+        <div id="addForm" class="card-minimal rounded-xl p-6 mb-6 form-animation" style="animation-delay: 0.1s;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold text-slate-900">Add New Timetable Entry</h2>
+                <button class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <form action="/addtimetable" id="timetableForm" method="post"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Timetable ID -->
+
+
+                <!-- Batch ID -->
+                <div>
+                    <label for="batchId" class="block text-sm font-medium text-slate-700 mb-2">Batch ID</label>
+                    <select id="batchId" name="batch_id"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                        <option value="">Select Batch</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+
+                <!-- Day of Week -->
+                <div>
+                    <label for="dayOfWeek" class="block text-sm font-medium text-slate-700 mb-2">Day of Week</label>
+                    <select id="dayOfWeek" name="day_Of_Week"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                        <option value="">Select Day</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                    </select>
+                </div>
+
+                <!-- Subject -->
+                <div>
+                    <label for="subject" class="block text-sm font-medium text-slate-700 mb-2">Subject</label>
+                    <input type="text" id="subject" name="subject_name" placeholder="e.g., Data Structures"
+                        list="subjectSuggestions"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                    <datalist id="subjectSuggestions">
+                        <option value="Data Structures">
+                        <option value="Database Management">
+                        <option value="Operating Systems">
+                        <option value="Computer Networks">
+                        <option value="Machine Learning">
+                        <option value="Software Engineering">
+                        <option value="Algorithms">
+                        <option value="Computer Graphics">
+                        <option value="Artificial Intelligence">
+                        <option value="Web Development">
+                    </datalist>
+                </div>
+
+                <!-- Start Time -->
+                <div>
+                    <label for="startTime" class="block text-sm font-medium text-slate-700 mb-2">Start Time</label>
+                    <input type="time" id="startTime" name="start_time"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                </div>
+
+                <!-- End Time -->
+                <div>
+                    <label for="endTime" class="block text-sm font-medium text-slate-700 mb-2">End Time</label>
+                    <input type="time" id="endTime" name="end_time"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                </div>
+
+                <!-- Classroom -->
+                <div>
+                    <label for="classroom" class="block text-sm font-medium text-slate-700 mb-2">Classroom</label>
+                    <select id="classroom" name="classroom"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                        <option value="">Select Classroom</option>
+                        <option value="A-LH 201">A-LH 201 (Lecture Hall)</option>
+                        <option value="A-LH 202">A-LH 202 (Lecture Hall)</option>
+                        <option value="B-CR 105">B-CR 105 (Classroom)</option>
+                        <option value="B-CR 106">B-CR 106 (Classroom)</option>
+                        <option value="C-LAB 301">C-LAB 301 (Computer Lab)</option>
+                        <option value="C-LAB 302">C-LAB 302 (Computer Lab)</option>
+                        <option value="C-LAB 303">C-LAB 303 (Computer Lab)</option>
+                        <option value="A-TR 201">A-TR 201 (Tutorial Room)</option>
+                        <option value="A-TR 202">A-TR 202 (Tutorial Room)</option>
+                        <option value="A-SR 401">A-SR 401 (Seminar Room)</option>
+                    </select>
+                </div>
+
+                <!-- Faculty Name -->
+                <div>
+                    <label for="facultyName" class="block text-sm font-medium text-slate-700 mb-2">Faculty Name</label>
+                    <input type="text" id="facultyName" name="faculty_name" value="Prof. Dr. Johnson"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                </div>
+
+                <!-- Type -->
+                <div>
+                    <label for="type" class="block text-sm font-medium text-slate-700 mb-2">Type</label>
+                    <select id="type" name="type"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                        required>
+                        <option value="">Select Type</option>
+                        <option value="L">Lecture (L)</option>
+                        <option value="T">Tutorial (T)</option>
+                        <option value="P">Practical (P)</option>
+                    </select>
+                </div>
+
+
+
+                <!-- Submit Button -->
+                <div class="md:col-span-2 lg:col-span-3">
+                    <div class="flex space-x-4">
+                        <button type="submit"
+                            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                            Add Timetable Entry
+                        </button>
+                        <button type="button"
+                            class="px-6 py-3 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium">
+                            Reset Form
+                        </button>
+                        <form action="/checkconflict/">
+                            <button type="button" id="checkConflictBtn"
+                                class="px-6 py-3 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors font-medium">
+                                Check Classroom Conflicts
+                            </button>
+
+
+                        </form>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Existing Timetable Entries -->
+        <div class="card-minimal rounded-xl p-6 form-animation" style="animation-delay: 0.2s;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold text-slate-900">Existing Timetable Entries</h2>
+                <div class="flex items-center space-x-3">
+                    <select id="filterBatch" onchange="filterEntries()"
+                        class="px-3 py-2 border border-slate-200 rounded-lg text-sm">
+                        <option value="">All Batches</option>
+                        <option value="CSE-2022-A">CSE 2022 A</option>
+                        <option value="CSE-2022-B">CSE 2022 B</option>
+                    </select>
+                    <select id="filterDay" onchange="filterEntries()"
+                        class="px-3 py-2 border border-slate-200 rounded-lg text-sm">
+                        <option value="">All Days</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Timetable Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="text-left p-3 font-medium text-slate-700">ID</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Batch</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Day</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Subject</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Start Time</th>
+                            <th class="text-left p-3 font-medium text-slate-700">End Time</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Room</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Faculty</th>
+                            <th class="text-left p-3 font-medium text-slate-700">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetableTableBody">
+                        <% result.forEach(row=> { %>
+                            <tr class="border-b border-slate-200 hover:bg-slate-50">
+                                <td class="p-3">
+                                    <%= row.timetable_id %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.batch_id %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.day_of_week %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.subject_name %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.start_time %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.end_time %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.classroom %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.faculty_name %>
+                                </td>
+                                <td class="p-3">
+                                    <%= row.type %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div id="messageContainer" class="fixed top-4 right-4 z-50"></div>
+        </div>
+        <script>
+            document.getElementById("checkConflictBtn").addEventListener("click", async () => {
+                const day_of_week = document.getElementById("dayOfWeek").value;
+                const start_time = document.getElementById("startTime").value;
+                const end_time = document.getElementById("endTime").value;
+                const classroom = document.getElementById("classroom").value;
+
+                if (!day_of_week || !start_time || !end_time || !classroom) {
+                    alert("⚠️ Please fill day, time, and classroom before checking conflicts.");
+                    return;
+                }
+
+                const query = new URLSearchParams({ day_of_week, start_time, end_time, classroom });
+                const res = await fetch(`/checkconflict?${query}`);
+                const data = await res.json();
+
+                if (data.conflict) {
+                    alert("⚠️ Classroom already occupied at this time:\n" + JSON.stringify(data.conflicts, null, 2));
+                } else {
+                    alert("✅ Classroom is available!");
+                }
+            });
+        </script>
+
+</body>
+
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studia - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .coral-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .teal-gradient {
+            background: linear-gradient(135deg, #4ECDC4 0%, #6EE7E0 100%);
+        }
+
+        .coral-teal-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        .dropdown {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.show {
+            transform: translateX(0);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 8px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-button {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            border-color: #FF6B6B;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(255, 107, 107, 0.2);
+        }
+    </style>
+</head>
+
+<body class="gradient-bg">
+    <!-- Navigation Bar -->
+    <nav class="bg-white card-shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="text-5xl mx-auto mb-4 flex items-center justify-center">
+                        <i class="fa-solid fa-circle-nodes bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent"
+                            style="font-size: 1.5rem; margin-top: 13px;"></i>
+                    </div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent cursor-pointer">
+                        Studia</h1>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#"
+                        class="nav-item  text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            <span>Home</span>
+                        </div>
+                    </a>
+
+                    <a href="/timetable"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <span>Timetable</span>
+                        </div>
+                    </a>
+
+                    <a href="/grades"
+                        class="nav-item active text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                            <span>Grades</span>
+                        </div>
+                    </a>
+
+                    <!-- <a href="/curriculum"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Curriculum</span>
+                        </div>
+                    </a> -->
+                    <a href="/ratefaculty"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Rate faculty</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Right Side Items -->
+                <div class="flex items-center space-x-4">
+
+
+
+
+                    <!-- User Profile Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleProfile()"
+                            class="flex items-center space-x-2 p-2 text-gray-600 hover:text-red-400 transition-colors">
+                            <div
+                                class="w-8 h-8 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="profileDropdown"
+                            class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border">
+                            <div class="p-3 border-b">
+                                <div class="font-medium text-gray-800">
+
+                                </div>
+                                <div class="text-sm text-gray-600">CSE Semester</div>
+                            </div>
+                            <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View
+                                    Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help &
+                                    Support</a>
+                            </div>
+                            <div class="border-t py-2">
+                                <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                            </path>
+                                        </svg>
+                                        <span>Sign Out</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()"
+                        class="md:hidden p-2 text-gray-600 hover:text-red-400 transition-colors">
+                        <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50">
+            <div class="p-4 border-b">
+                <div class="flex items-center">
+                    <div class="coral-teal-gradient w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-bold text-lg">S</span>
+                    </div>
+                    <h1
+                        class="text-xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent">
+                        Studia</h1>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="space-y-2">
+                    <a href="#"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                            </path>
+                        </svg>
+                        <span>Home</span>
+                    </a>
+                    <a href="/timetable"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <span>Timetable</span>
+                    </a>
+                    <a href="/grade"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
+                        </svg>
+                        <span>Grades</span>
+                    </a>
+                    <a href="/curriculum"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                        <span>Curriculum</span>
+                    </a>
+                </div>
+                <div class="mt-6 pt-6 border-t">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div
+                            class="w-10 h-10 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold">
+                            AF
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">
+
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                Semester
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">View Profile</a>
+                        <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">Settings</a>
+                        <button onclick="signOut()"
+                            class="block w-full text-left p-2 text-red-600 hover:bg-red-50 rounded">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()">
+        </div>
+    </nav>
+
+
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Title and Summary -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">My Grades</h2>
+            <p class="text-gray-600">Track your academic progress across all subjects</p>
+
+            <!-- Overall GPA Card -->
+            <div class="mt-6 bg-gradient-to-r from-coral to-teal rounded-xl p-6 text-white"
+                style=" background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold opacity-90">Overall GPA</h3>
+                        <p class="text-3xl font-bold">3.7</p>
+                        <p class="text-sm opacity-80">Spring 2024 Semester</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl mb-2">🎯</div>
+                        <p class="text-sm opacity-80">6 courses completed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="mb-6">
+            <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+                <button class="px-4 py-2 rounded-md bg-white text-coral font-medium shadow-sm">Current Semester</button>
+                <button class="px-4 py-2 rounded-md text-gray-600 hover:text-gray-800">All Time</button>
+                <button class="px-4 py-2 rounded-md text-gray-600 hover:text-gray-800">Previous</button>
+            </div>
+        </div>
+
+        <!-- Grades Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Mathematics -->
+            <div class="grade-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">📐</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Mathematics</h3>
+                            <p class="text-sm text-gray-500">MATH 201</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-600">A-</div>
+                        <div class="text-sm text-gray-500">92%</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Progress</span>
+                        <span class="text-gray-800">92/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physics -->
+            <div class="grade-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">⚛️</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Physics</h3>
+                            <p class="text-sm text-gray-500">PHYS 101</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-600">B+</div>
+                        <div class="text-sm text-gray-500">87%</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Progress</span>
+                        <span class="text-gray-800">87/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-blue-500 h-2 rounded-full" style="width: 87%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chemistry -->
+            <div class="grade-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">🧪</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Chemistry</h3>
+                            <p class="text-sm text-gray-500">CHEM 150</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-600">A</div>
+                        <div class="text-sm text-gray-500">95%</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Progress</span>
+                        <span class="text-gray-800">95/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-green-500 h-2 rounded-full" style="width: 95%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- English Literature -->
+            <div class="grade-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">📖</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">English Literature</h3>
+                            <p class="text-sm text-gray-500">ENG 205</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-yellow-600">B</div>
+                        <div class="text-sm text-gray-500">83%</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Progress</span>
+                        <span class="text-gray-800">83/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-yellow-500 h-2 rounded-full" style="width: 83%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Computer Science -->
+            <div class="grade-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">💻</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Computer Science</h3>
+                            <p class="text-sm text-gray-500">CS 101</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-600">A</div>
+                        <div class="text-sm text-gray-500">96%</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Progress</span>
+                        <span class="text-gray-800">96/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-green-500 h-2 rounded-full" style="width: 96%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="grade-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">🏛️</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">World History</h3>
+                            <p class="text-sm text-gray-500">HIST 102</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-600">B+</div>
+                        <div class="text-sm text-gray-500">89%</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Progress</span>
+                        <span class="text-gray-800">89/100</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-blue-500 h-2 rounded-full" style="width: 89%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Recent Grade Updates</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <span class="text-green-600 font-semibold">A</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">Chemistry Lab Report #3</p>
+                            <p class="text-sm text-gray-500">CHEM 150 • 2 days ago</p>
+                        </div>
+                    </div>
+                    <span class="text-green-600 font-semibold">95/100</span>
+                </div>
+
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-600 font-semibold">B+</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">Physics Midterm Exam</p>
+                            <p class="text-sm text-gray-500">PHYS 101 • 1 week ago</p>
+                        </div>
+                    </div>
+                    <span class="text-blue-600 font-semibold">87/100</span>
+                </div>
+
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <span class="text-green-600 font-semibold">A-</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">Math Assignment #8</p>
+                            <p class="text-sm text-gray-500">MATH 201 • 1 week ago</p>
+                        </div>
+                    </div>
+                    <span class="text-green-600 font-semibold">92/100</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate progress bars on page load
+        window.addEventListener('load', function () {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+
+        // Add click functionality to filter tabs
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                document.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('bg-white', 'text-coral', 'shadow-sm');
+                    btn.classList.add('text-gray-600');
+                });
+
+                // Add active class to clicked button
+                this.classList.add('bg-white', 'text-coral', 'shadow-sm');
+                this.classList.remove('text-gray-600');
+            });
+        });
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9801f7c0c7b11b78',t:'MTc1ODA0MjUyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

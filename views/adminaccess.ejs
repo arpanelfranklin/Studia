@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studia - Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: '#FF6B6B',
+                        teal: '#4ECDC4'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .coral-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .teal-gradient {
+            background: linear-gradient(135deg, #4ECDC4 0%, #6EE7E0 100%);
+        }
+
+        .coral-teal-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        .dropdown {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.show {
+            transform: translateX(0);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 8px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-button {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            border-color: #FF6B6B;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(255, 107, 107, 0.2);
+        }
+
+        .js-hidden {
+            display: none !important;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white card-shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="text-5xl mx-auto mb-4 flex items-center justify-center">
+                        <i class="fa-solid fa-circle-nodes bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent"
+                            style="font-size: 1.5rem; margin-top: 13px;"></i>
+                    </div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent cursor-pointer">
+                        Studia</h1>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#"
+                        class="nav-item active text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            <span>Welcome ADMIN</span>
+                        </div>
+                    </a>
+
+                    <!-- <a href="/timetable"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <span>Timetable</span>
+                        </div>
+                    </a> -->
+
+                    <!-- <a href="/grades"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                            <span>Grades</span>
+                        </div>
+                    </a> -->
+
+                    <!-- <a href="/curriculum"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Curriculum</span>
+                        </div>
+                    </a> -->
+                    <!-- <a href="/ratefaculty"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Rate faculty</span>
+                        </div>
+                    </a> -->
+                </div>
+
+                <!-- Right Side Items -->
+                <div class="flex items-center space-x-4">
+
+
+
+
+                    <!-- User Profile Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleProfile()"
+                            class="flex items-center space-x-2 p-2 text-gray-600 hover:text-red-400 transition-colors">
+                            <div
+                                class="w-8 h-8 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="profileDropdown"
+                            class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border hidden">
+                            <div class="p-3 border-b">
+                                <div class="font-medium text-gray-800">
+
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                </div>
+                                <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View
+                                        Profile</a>
+                                    <a href="#"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help &
+                                        Support</a>
+                                </div>
+                                <div class="border-t py-2">
+                                    <button
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                                </path>
+                                            </svg>
+                                            <span>Sign Out</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Menu Button -->
+                        <button onclick="toggleMobileMenu()"
+                            class="md:hidden p-2 text-gray-600 hover:text-red-400 transition-colors">
+                            <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                            <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50">
+                <div class="p-4 border-b">
+                    <div class="flex items-center">
+                        <div class="coral-teal-gradient w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                            <span class="text-white font-bold text-lg">S</span>
+                        </div>
+                        <h1
+                            class="text-xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent">
+                            Studia</h1>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="space-y-2">
+                        <a href="#"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            <span>Home</span>
+                        </a>
+                        <a href="/timetable"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <span>Timetable</span>
+                        </a>
+                        <a href="/grade"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                            <span>Grades</span>
+                        </a>
+                        <a href="/curriculum"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Curriculum</span>
+                        </a>
+                    </div>
+                    <div class="mt-6 pt-6 border-t">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div
+                                class="w-10 h-10 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold">
+                                AF
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-800">
+
+                                </div>
+                                <div class="text-sm text-gray-600">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">View Profile</a>
+                            <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">Settings</a>
+                            <button onclick="signOut()"
+                                class="block w-full text-left p-2 text-red-600 hover:bg-red-50 rounded">Sign
+                                Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Overlay -->
+            <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+                onclick="toggleMobileMenu()">
+            </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome to Admin Portal</h2>
+            <p class="text-gray-600">Manage your institution efficiently with quick actions</p>
+        </div>
+
+        <!-- Quick Action Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Add New Student -->
+            <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('studentModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-coral bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-coral" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Add New Student</h3>
+                    <p class="text-gray-600 text-sm">Register new students to the system</p>
+                </div>
+            </div>
+
+            <!-- Add New Faculty -->
+            <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('facultyModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-teal bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-teal" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                            <path
+                                d="M6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Add New Faculty</h3>
+                    <p class="text-gray-600 text-sm">Add teaching staff to the system</p>
+                </div>
+            </div>
+
+            <!-- Approve Leave -->
+            <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('leaveModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-coral bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-coral" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Approve Leave</h3>
+                    <p class="text-gray-600 text-sm">Review and approve leave requests</p>
+                </div>
+            </div>
+
+            <!-- Add Batch -->
+            <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('batchModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-teal bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-teal" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Add Batch</h3>
+                    <p class="text-gray-600 text-sm">Create new student batches</p>
+                </div>
+            </div>
+
+            <!-- Add Branch -->
+            <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('branchModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-coral bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-coral" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Add Branch</h3>
+                    <p class="text-gray-600 text-sm">Add new academic branches</p>
+                </div>
+            </div>
+
+            <!-- Add Subject -->
+            <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('subjectModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-teal bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-teal" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Add Subject</h3>
+                    <p class="text-gray-600 text-sm">Add new subjects to curriculum</p>
+                </div>
+            </div>
+
+            <!-- View Reports -->
+            <!-- <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('reportsModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-coral bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-coral" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">View Reports</h3>
+                    <p class="text-gray-600 text-sm">Generate and view system reports</p>
+                </div>
+            </div> -->
+
+            <!-- Manage Users -->
+            <!-- <div class="bg-white rounded-xl shadow-md card-hover cursor-pointer" onclick="openModal('usersModal')">
+                <div class="p-6">
+                    <div class="w-12 h-12 bg-teal bg-opacity-10 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-teal" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Users</h3>
+                    <p class="text-gray-600 text-sm">Manage user accounts and permissions</p>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+            <!-- Modals -->
+            <!-- Student Modal -->
+            <div id="studentModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Add New Student</h3>
+                        <button onclick="closeModal('studentModal')"
+                            class="text-gray-400 hover:text-gray-600">✖</button>
+                    </div>
+
+                    <form action="/addstudent" method="POST">
+                        <div class="space-y-4">
+                            <!-- Student ID -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                                <input type="text" name="studentID" required maxlength="20" placeholder="e.g., STU001"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" name="email" required maxlength="100"
+                                    placeholder="e.g., student@example.com"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" name="passwords" required minlength="6" maxlength="255"
+                                    placeholder="Enter password"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-3 mt-6">
+                            <button type="submit"
+                                class="flex-1 bg-coral text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
+                                Add Student
+                            </button>
+                            <button type="button" onclick="closeModal('studentModal')"
+                                class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- Faculty Modal -->
+            <!-- Faculty Modal -->
+            <div id="facultyModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Add New Faculty</h3>
+                        <button onclick="closeModal('facultyModal')" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <form action="/addfaculty" method="post">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Faculty ID</label>
+                                <input type="text" name="faculty_id" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" name="email" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" name="password" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+                        </div>
+                        <div class="flex space-x-3 mt-6">
+                            <button type="submit"
+                                class="flex-1 bg-teal text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
+                                Add Faculty
+                            </button>
+                            <button type="button" onclick="closeModal('facultyModal')"
+                                class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- Leave Approval Modal -->
+            <div id="leaveModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Pending Leave Requests</h3>
+                        <button onclick="closeModal('leaveModal')" class="text-gray-400 hover:text-gray-600">
+                            ✖
+                        </button>
+                    </div>
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        <% if (leaves.length> 0) { %>
+                            <% leaves.forEach(leave=> { %>
+                                <div class="border border-gray-200 rounded-lg p-4" id="leave-<%= leave.leave_id %>">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">
+                                                <%= leave.facultyName %> (ID: <%= leave.faculty_id %>)
+                                            </h4>
+                                            <p class="text-sm text-gray-600">
+                                                <%= leave.leave_type %> Leave
+                                            </p>
+                                            <p class="text-xs text-gray-500">From: <%=
+                                                    leave.fromDate.toISOString().split("T")[0] %>
+                                                    to <%= leave.toDate.toISOString().split("T")[0] %>
+                                            </p>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button onclick="updateLeaveStatus(<%= leave.leave_id %>, 'approve')"
+                                                class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">Approve</button>
+                                            <button onclick="updateLeaveStatus(<%= leave.leave_id %>, 'reject')"
+                                                class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Reject</button>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Reason: <%= leave.reason %>
+                                    </p>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p class="text-gray-600">No pending leave requests.</p>
+                                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function updateLeaveStatus(leaveId, action) {
+                    fetch(`/leaves/${leaveId}/${action}`, { method: "POST" })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById(`leave-${leaveId}`).remove();
+                                alert(`Leave ${data.status}`);
+                            }
+                        })
+                        .catch(err => console.error(err));
+                }
+            </script>
+
+            <!-- Batch Modal -->
+            <!-- Batch Modal -->
+            <div id="batchModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Add New Batch</h3>
+                        <button onclick="closeModal('batchModal')" class="text-gray-400 hover:text-gray-600">✖</button>
+                    </div>
+
+                    <form action="/addbatch" method="POST">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Batch ID</label>
+                                <input type="number" name="batch_id" required placeholder="e.g., 101"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+                            <!-- Branch ID -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Branch ID</label>
+                                <input type="number" name="branch_id" required placeholder="e.g., 101"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+
+                            <!-- Academic Year -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+                                <input type="number" name="year" required placeholder="e.g., 2025"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+
+                            <!-- Semester -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
+                                <input type="number" name="semester" min="1" max="8" required placeholder="e.g., 3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+
+                            <!-- Branch Code -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Branch Code</label>
+                                <input type="text" name="branch_code" maxlength="15" placeholder="e.g., CSE-2025"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+
+                            <!-- Mentor -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Mentor</label>
+                                <input type="text" name="mentor" maxlength="50" placeholder="e.g., Dr. Smith"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-3 mt-6">
+                            <button type="submit"
+                                class="flex-1 bg-teal text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">Create
+                                Batch</button>
+                            <button type="button" onclick="closeModal('batchModal')"
+                                class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Branch Modal -->
+            <div id="branchModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Add New Branch</h3>
+                        <button onclick="closeModal('branchModal')" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <form onsubmit="submitForm(event, 'branch')">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Branch Name</label>
+                                <input type="text" required placeholder="e.g., Computer Science Engineering"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Branch Code</label>
+                                <input type="text" required placeholder="e.g., CSE"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Department Head</label>
+                                <input type="text" required placeholder="e.g., Dr. John Smith"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea required rows="3" placeholder="Brief description of the branch"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent"></textarea>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3 mt-6">
+                            <button type="submit"
+                                class="flex-1 bg-coral text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">Add
+                                Branch</button>
+                            <button type="button" onclick="closeModal('branchModal')"
+                                class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Subject Modal -->
+            <div id="subjectModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Add New Subject</h3>
+                        <button onclick="closeModal('subjectModal')" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <form action="addBranch" method="post">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Branch Name</label>
+                                <input type="text" name="branchName" required
+                                    placeholder="e.g., Computer Science Engineering"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Branch Code</label>
+                                <input type="text" name="branchCode" required placeholder="e.g., CSE"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent">
+                            </div>
+                        </div>
+                        <div class="flex space-x-3 mt-6">
+                            <button type="submit"
+                                class="flex-1 bg-coral text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
+                                Add Branch
+                            </button>
+                            <button type="button" onclick="closeModal('branchModal')"
+                                class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Reports Modal
+    <div id="reportsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-lg mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-900">Generate Reports</h3>
+                <button onclick="closeModal('reportsModal')" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <button onclick="generateReport('student')"
+                    class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="font-medium text-gray-900">Student Report</div>
+                    <div class="text-sm text-gray-600">Generate comprehensive student data report</div>
+                </button>
+                <button onclick="generateReport('faculty')"
+                    class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="font-medium text-gray-900">Faculty Report</div>
+                    <div class="text-sm text-gray-600">Generate faculty information report</div>
+                </button>
+                <button onclick="generateReport('attendance')"
+                    class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="font-medium text-gray-900">Attendance Report</div>
+                    <div class="text-sm text-gray-600">Generate attendance statistics</div>
+                </button>
+                <button onclick="generateReport('academic')"
+                    class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="font-medium text-gray-900">Academic Report</div>
+                    <div class="text-sm text-gray-600">Generate academic performance report</div>
+                </button>
+            </div>
+        </div>
+    </div> -->
+
+            <!-- Users Modal
+    <div id="usersModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-900">Manage Users</h3>
+                <button onclick="closeModal('usersModal')" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-4 max-h-96 overflow-y-auto">
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">John Doe</h4>
+                            <p class="text-sm text-gray-600">Student - CSE Department</p>
+                            <p class="text-xs text-gray-500">john.doe@studia.edu</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editUser(1)"
+                                class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">Edit</button>
+                            <button onclick="toggleUserStatus(1)"
+                                class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600">Suspend</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Dr. Smith</h4>
+                            <p class="text-sm text-gray-600">Faculty - CSE Department</p>
+                            <p class="text-xs text-gray-500">dr.smith@studia.edu</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editUser(2)"
+                                class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">Edit</button>
+                            <button onclick="toggleUserStatus(2)"
+                                class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">Active</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+            <script>
+                // Toggle profile menu
+                function toggleProfileMenu() {
+                    const menu = document.getElementById('profileMenu');
+                    menu.classList.toggle('hidden');
+                }
+
+                // Close profile menu when clicking outside
+                document.addEventListener('click', function (event) {
+                    const menu = document.getElementById('profileMenu');
+                    const button = event.target.closest('button');
+                    if (!button || !button.onclick || button.onclick.toString().indexOf('toggleProfileMenu') === -1) {
+                        menu.classList.add('hidden');
+                    }
+                });
+
+                // Modal functions
+                function openModal(modalId) {
+                    document.getElementById(modalId).classList.remove('hidden');
+                }
+
+                function closeModal(modalId) {
+                    document.getElementById(modalId).classList.add('hidden');
+                }
+
+                // Form submission
+                function submitForm(event, type) {
+                    event.preventDefault();
+                    const formData = new FormData(event.target);
+
+                    // Simulate form submission
+                    setTimeout(() => {
+                        alert(`${type.charAt(0).toUpperCase() + type.slice(1)} added successfully!`);
+                        event.target.reset();
+                        closeModal(type + 'Modal');
+                    }, 500);
+                }
+
+                // Leave approval functions
+                function approveLeave(id) {
+                    alert(`Leave request ${id} approved successfully!`);
+                    // Remove the leave request from the list
+                    event.target.closest('.border').style.opacity = '0.5';
+                    event.target.closest('.border').style.pointerEvents = 'none';
+                }
+
+                function rejectLeave(id) {
+                    alert(`Leave request ${id} rejected.`);
+                    // Remove the leave request from the list
+                    event.target.closest('.border').style.opacity = '0.5';
+                    event.target.closest('.border').style.pointerEvents = 'none';
+                }
+
+                // Report generation
+                function generateReport(type) {
+                    alert(`Generating ${type} report... This will be downloaded shortly.`);
+                    closeModal('reportsModal');
+                }
+
+                // User management functions
+                function editUser(id) {
+                    alert(`Opening edit form for user ${id}`);
+                }
+
+                function toggleUserStatus(id) {
+                    const button = event.target;
+                    if (button.textContent === 'Suspend') {
+                        button.textContent = 'Activate';
+                        button.className = 'bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600';
+                        alert(`User ${id} suspended successfully!`);
+                    } else {
+                        button.textContent = 'Suspend';
+                        button.className = 'bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600';
+                        alert(`User ${id} activated successfully!`);
+                    }
+                }
+
+                // Sign out function
+                function signOut() {
+                    if (confirm('Are you sure you want to sign out?')) {
+                        alert('Signing out... Redirecting to login page.');
+                    }
+                }
+
+                // Close modals when clicking outside
+                document.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('fixed')) {
+                        const modalId = event.target.id;
+                        if (modalId && modalId.includes('Modal')) {
+                            closeModal(modalId);
+                        }
+                    }
+                });
+            </script>
+            <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'982a96b4338791d3',t:'MTc1ODQ2ODQ2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

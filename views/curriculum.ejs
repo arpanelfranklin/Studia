@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum - EduPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: '#FF6B6B',
+                        teal: '#4ECDC4'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .course-card {
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .semester-timeline {
+            position: relative;
+        }
+
+        .semester-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #FF6B6B, #4ECDC4);
+        }
+
+        .timeline-dot {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+    <body class="gradient-bg">
+        <!-- Navigation Bar -->
+        <nav class="bg-white card-shadow sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center">
+                        <div class="text-5xl mx-auto mb-4 flex items-center justify-center">
+                            <i class="fa-solid fa-circle-nodes bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent"
+                                style="font-size: 1.5rem; margin-top: 13px;"></i>
+                        </div>
+                        <h1
+                            class="text-2xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent cursor-pointer">
+                            Studia</h1>
+                    </div>
+
+                    <!-- Desktop Navigation Menu -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#"
+                            class="nav-item  text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                            onclick="setActive(this)">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                    </path>
+                                </svg>
+                                <span>Home</span>
+                            </div>
+                        </a>
+
+                        <a href="/timetable"
+                            class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                            onclick="setActive(this)">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                <span>Timetable</span>
+                            </div>
+                        </a>
+
+                        <a href="/grades"
+                            class="nav-item active text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                            onclick="setActive(this)">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                    </path>
+                                </svg>
+                                <span>Grades</span>
+                            </div>
+                        </a>
+
+                        <a href="/curriculum"
+                            class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                            onclick="setActive(this)">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                    </path>
+                                </svg>
+                                <span>Curriculum</span>
+                            </div>
+                        </a>
+                        <a href="/ratefaculty"
+                            class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                            onclick="setActive(this)">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                    </path>
+                                </svg>
+                                <span>Rate faculty</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Right Side Items -->
+                    <div class="flex items-center space-x-4">
+
+
+
+
+                        <!-- User Profile Dropdown -->
+                        <div class="relative">
+                            <button onclick="toggleProfile()"
+                                class="flex items-center space-x-2 p-2 text-gray-600 hover:text-red-400 transition-colors">
+                                <div
+                                    class="w-8 h-8 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="profileDropdown"
+                                class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border">
+                                <div class="p-3 border-b">
+                                    <div class="font-medium text-gray-800">
+
+                                    </div>
+                                    <div class="text-sm text-gray-600">CSE Semester</div>
+                                </div>
+                                <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View
+                                        Profile</a>
+                                    <a href="#"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help &
+                                        Support</a>
+                                </div>
+                                <div class="border-t py-2">
+                                    <button
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                                </path>
+                                            </svg>
+                                            <span>Sign Out</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Menu Button -->
+                        <button onclick="toggleMobileMenu()"
+                            class="md:hidden p-2 text-gray-600 hover:text-red-400 transition-colors">
+                            <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                            <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50">
+                <div class="p-4 border-b">
+                    <div class="flex items-center">
+                        <div class="coral-teal-gradient w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                            <span class="text-white font-bold text-lg">S</span>
+                        </div>
+                        <h1
+                            class="text-xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent">
+                            Studia</h1>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="space-y-2">
+                        <a href="#"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            <span>Home</span>
+                        </a>
+                        <a href="/timetable"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <span>Timetable</span>
+                        </a>
+                        <a href="/grade"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                            <span>Grades</span>
+                        </a>
+                        <a href="/curriculum"
+                            class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Curriculum</span>
+                        </a>
+                    </div>
+                    <div class="mt-6 pt-6 border-t">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div
+                                class="w-10 h-10 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold">
+                                AF
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-800">
+
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    Semester
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">View Profile</a>
+                            <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">Settings</a>
+                            <button onclick="signOut()"
+                                class="block w-full text-left p-2 text-red-600 hover:bg-red-50 rounded">Sign
+                                Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Overlay -->
+            <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+                onclick="toggleMobileMenu()">
+            </div>
+        </nav>
+
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Computer Science Curriculum</h2>
+                <p class="text-gray-600">Bachelor of Science in Computer Science • 4-Year Program</p>
+
+                <!-- Program Overview -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <div class="text-2xl font-bold text-coral">120</div>
+                        <div class="text-sm text-gray-600">Total Credits</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <div class="text-2xl font-bold text-teal">8</div>
+                        <div class="text-sm text-gray-600">Semesters</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <div class="text-2xl font-bold text-coral">45</div>
+                        <div class="text-sm text-gray-600">Core Courses</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <div class="text-2xl font-bold text-teal">15</div>
+                        <div class="text-sm text-gray-600">Electives</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year Tabs -->
+            <div class="mb-8">
+                <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+                    <button class="year-tab px-6 py-3 rounded-md bg-white text-coral font-medium shadow-sm"
+                        data-year="1">Year 1</button>
+                    <button class="year-tab px-6 py-3 rounded-md text-gray-600 hover:text-gray-800" data-year="2">Year
+                        2</button>
+                    <button class="year-tab px-6 py-3 rounded-md text-gray-600 hover:text-gray-800" data-year="3">Year
+                        3</button>
+                    <button class="year-tab px-6 py-3 rounded-md text-gray-600 hover:text-gray-800" data-year="4">Year
+                        4</button>
+                </div>
+            </div>
+
+            <!-- Year 1 Content -->
+            <div class="year-content" id="year-1">
+                <div class="semester-timeline space-y-8">
+                    <!-- Fall Semester -->
+                    <div class="flex items-start space-x-6">
+                        <div
+                            class="timeline-dot w-10 h-10 bg-coral rounded-full flex items-center justify-center text-white font-semibold">
+                            F1
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Fall Semester - Year 1</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">💻</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Intro to Programming</h4>
+                                            <p class="text-sm text-gray-500">CS 101 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Fundamentals of programming using Python.
+                                        Variables, loops, functions, and basic algorithms.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Core</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: None</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">📐</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Calculus I</h4>
+                                            <p class="text-sm text-gray-500">MATH 151 • 4 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Limits, derivatives, and applications.
+                                        Foundation
+                                        for advanced mathematics in computer science.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Math</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: Pre-calc</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div
+                                            class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">📖</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">English Composition</h4>
+                                            <p class="text-sm text-gray-500">ENG 101 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Academic writing, research methods, and
+                                        communication skills essential for technical fields.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">General
+                                            Ed</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: None</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">⚛️</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Physics I</h4>
+                                            <p class="text-sm text-gray-500">PHYS 201 • 4 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Mechanics, waves, and thermodynamics.
+                                        Scientific
+                                        foundation for computing systems.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Science</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: Calculus I</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div
+                                            class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🎨</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Digital Design</h4>
+                                            <p class="text-sm text-gray-500">ART 105 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Introduction to visual design principles,
+                                        color
+                                        theory, and digital media creation.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span
+                                            class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Elective</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: None</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-right">
+                                <span class="text-sm font-medium text-gray-600">Total Credits: 17</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spring Semester -->
+                    <div class="flex items-start space-x-6">
+                        <div
+                            class="timeline-dot w-10 h-10 bg-teal rounded-full flex items-center justify-center text-white font-semibold">
+                            S1
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Spring Semester - Year 1</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🔧</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Data Structures</h4>
+                                            <p class="text-sm text-gray-500">CS 102 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Arrays, linked lists, stacks, queues, trees,
+                                        and
+                                        graphs. Algorithm analysis and implementation.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Core</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: CS 101</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">📊</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Calculus II</h4>
+                                            <p class="text-sm text-gray-500">MATH 152 • 4 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Integration techniques, sequences, series, and
+                                        multivariable calculus introduction.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Math</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: MATH 151</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div
+                                            class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🔌</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Digital Logic</h4>
+                                            <p class="text-sm text-gray-500">CS 150 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Boolean algebra, logic gates, combinational
+                                        and
+                                        sequential circuits, computer architecture basics.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Core</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: None</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div
+                                            class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🗣️</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Public Speaking</h4>
+                                            <p class="text-sm text-gray-500">COMM 101 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Oral communication skills, presentation
+                                        techniques, and professional communication.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">General
+                                            Ed</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: ENG 101</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🧠</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Psychology</h4>
+                                            <p class="text-sm text-gray-500">PSYC 101 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Introduction to human behavior, cognition, and
+                                        psychological principles relevant to HCI.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">General
+                                            Ed</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: None</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-right">
+                                <span class="text-sm font-medium text-gray-600">Total Credits: 16</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year 2 Content (Hidden by default) -->
+            <div class="year-content hidden" id="year-2">
+                <div class="semester-timeline space-y-8">
+                    <div class="flex items-start space-x-6">
+                        <div
+                            class="timeline-dot w-10 h-10 bg-coral rounded-full flex items-center justify-center text-white font-semibold">
+                            F2
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Fall Semester - Year 2</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🔍</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Algorithms</h4>
+                                            <p class="text-sm text-gray-500">CS 201 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Algorithm design and analysis, sorting,
+                                        searching,
+                                        graph algorithms, dynamic programming.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Core</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: CS 102</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div
+                                            class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">🏗️</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Computer Architecture</h4>
+                                            <p class="text-sm text-gray-500">CS 250 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">CPU design, memory systems, instruction sets,
+                                        performance analysis, and assembly language.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Core</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: CS 150</span>
+                                    </div>
+                                </div>
+
+                                <div class="course-card bg-white rounded-lg p-4 border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">📈</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Statistics</h4>
+                                            <p class="text-sm text-gray-500">STAT 201 • 3 Credits</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Probability, statistical inference, hypothesis
+                                        testing, and data analysis methods.</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Math</span>
+                                        <span class="text-xs text-gray-500">Prerequisites: MATH 152</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-right">
+                                <span class="text-sm font-medium text-gray-600">Total Credits: 15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Degree Requirements Summary -->
+            <div class="mt-12 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <h3 class="text-xl font-semibold text-gray-900 mb-6">Degree Requirements Summary</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-r from-coral to-teal rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-white text-2xl">💻</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Core CS Courses</h4>
+                        <p class="text-2xl font-bold text-coral mb-1">45 Credits</p>
+                        <p class="text-sm text-gray-600">Programming, algorithms, systems</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-r from-teal to-coral rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-white text-2xl">📐</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Mathematics</h4>
+                        <p class="text-2xl font-bold text-teal mb-1">18 Credits</p>
+                        <p class="text-sm text-gray-600">Calculus, statistics, discrete math</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-r from-coral to-teal rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-white text-2xl">🌟</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Electives</h4>
+                        <p class="text-2xl font-bold text-coral mb-1">27 Credits</p>
+                        <p class="text-sm text-gray-600">Specialization courses</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-r from-teal to-coral rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-white text-2xl">📚</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">General Education</h4>
+                        <p class="text-2xl font-bold text-teal mb-1">30 Credits</p>
+                        <p class="text-sm text-gray-600">Liberal arts, sciences</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Tab functionality
+            document.querySelectorAll('.year-tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const year = this.dataset.year;
+
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.year-tab').forEach(t => {
+                        t.classList.remove('bg-white', 'text-coral', 'shadow-sm');
+                        t.classList.add('text-gray-600');
+                    });
+
+                    // Add active class to clicked tab
+                    this.classList.add('bg-white', 'text-coral', 'shadow-sm');
+                    this.classList.remove('text-gray-600');
+
+                    // Hide all year content
+                    document.querySelectorAll('.year-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    // Show selected year content
+                    document.getElementById(`year-${year}`).classList.remove('hidden');
+                });
+            });
+
+            // Add hover effects to course cards
+            document.querySelectorAll('.course-card').forEach(card => {
+                card.addEventListener('mouseenter', function () {
+                    this.style.borderColor = '#4ECDC4';
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    this.style.borderColor = '#e5e7eb';
+                });
+            });
+            function toggleProfile() {
+                const dropdown = document.getElementById("profileDropdown");
+                dropdown.classList.toggle("hidden");
+            }
+
+            // Close the dropdown if user clicks outside
+            window.addEventListener("click", function (e) {
+                const profileButton = document.querySelector("[onclick='toggleProfile()']");
+                const dropdown = document.getElementById("profileDropdown");
+
+                if (!profileButton.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add("hidden");
+                }
+        </script>
+        <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9801fcd791a11b78',t:'MTc1ODA0MjczNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+    </body>
+
+</html>

@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Leave Application - University Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #374151;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .leave-type-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .leave-type-card:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .leave-type-card.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .leave-type-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .sick-icon {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .casual-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .earned-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .other-icon {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .faculty-info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .date-range-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .date-range-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .leave-summary {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #667eea;
+        }
+
+        .character-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .character-counter.warning {
+            color: #f59e0b;
+        }
+
+        .character-counter.error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="min-h-screen p-6">
+        <!-- Header -->
+
+
+        <!-- Main Content -->
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card rounded-3xl p-8">
+                <!-- Faculty Information -->
+
+
+                <!-- Leave Application Form -->
+                <form id="leaveApplicationForm" action="/applyleave" method="post">
+                    <!-- Leave Type Selection -->
+                    <div class="faculty-info">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Faculty Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label class="form-label required">Faculty ID</label>
+                                <input type="text" id="facultyId" class="form-input" name="faculty_id"
+                                    placeholder="Enter your Faculty ID (e.g., FAC001)" maxlength="10" required>
+                                <div class="error-message" id="facultyIdError">Please enter a valid Faculty ID</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="facultyName" class="form-label">Faculty Name</label>
+                                <input type="text" id="facultyName" class="form-input"
+                                    placeholder="Your name will appear here" name="facultyName">
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Leave Date Range -->
+                    <div class="form-group">
+                        <label class="form-label required">Leave Date(s)</label>
+                        <div class="date-range-container">
+                            <div>
+                                <label class="form-label">From Date</label>
+                                <input type="date" id="fromDate" name="from_date" class="form-input" required>
+                                <div class="error-message" id="fromDateError">Please select a valid from date</div>
+                            </div>
+                            <div>
+                                <label class="form-label">To Date</label>
+                                <input type="date" id="toDate" name="to_date" class="form-input" required>
+                                <div class="error-message" id="toDateError">Please select a valid to date</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-2">
+                            <span id="leaveDuration">Select dates to calculate duration</span>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Reason for Leave -->
+                    <div class="form-group">
+                        <label class="form-label required">Reason for Leave</label>
+                        <textarea id="reason" name="reason" class="form-textarea"
+                            placeholder="Please provide a detailed reason for your leave application. Include any relevant information that supports your request..."
+                            maxlength="1000" required></textarea>
+                        <div class="character-counter">
+                            <span id="reasonCount">0</span>/1000 characters
+                        </div>
+                        <div class="error-message" id="reasonError">Please provide a reason for leave (minimum 10
+                            characters)</div>
+                    </div>
+
+
+
+
+
+                    <!-- Terms and Conditions -->
+                    <div class="form-group">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="termsAccepted" class="mt-1" required>
+                            <label for="termsAccepted" class="text-sm text-gray-700">
+                                I hereby declare that the information provided above is true and correct to the best of
+                                my knowledge.
+                                I understand that any false information may result in disciplinary action. I also
+                                acknowledge that
+                                this leave application is subject to approval by the competent authority.
+                            </label>
+                        </div>
+                        <div class="error-message" id="termsError">Please accept the terms and conditions</div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="flex gap-4 mt-8">
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            Submit Application
+                        </button>
+
+
+
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample faculty data for demonstration
+        const facultyData = {
+            'FAC001': {
+                name: 'Dr. Sarah Johnson',
+                department: 'Computer Science & Engineering',
+                employeeCode: 'EMP2024001'
+            },
+            'FAC002': {
+                name: 'Prof. Michael Kumar',
+                department: 'Information Technology',
+                employeeCode: 'EMP2024002'
+            },
+            'FAC003': {
+                name: 'Dr. Anna Lee',
+                department: 'Software Engineering',
+                employeeCode: 'EMP2024003'
+            }
+        };
+
+        let selectedLeaveType = '';
+        let selectedFiles = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set current date
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fromDate').min = today;
+            document.getElementById('toDate').min = today;
+
+            // Initialize event listeners
+            initializeEventListeners();
+
+            // Load draft if exists
+            loadDraft();
+        });
+
+        function initializeEventListeners() {
+            // Faculty ID lookup
+            document.getElementById('facultyId').addEventListener('blur', lookupFaculty);
+
+            // Leave type selection
+            document.querySelectorAll('.leave-type-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    selectLeaveType(this.dataset.type);
+                });
+            });
+
+            // Date change handlers
+            document.getElementById('fromDate').addEventListener('change', updateDateRange);
+            document.getElementById('toDate').addEventListener('change', updateDateRange);
+
+            // Character counters
+            document.getElementById('reason').addEventListener('input', updateCharacterCount);
+            document.getElementById('handoverDetails').addEventListener('input', updateHandoverCount);
+
+            // File upload
+            document.getElementById('supportingDocs').addEventListener('change', handleFileUpload);
+
+            // Form submission
+            document.getElementById('leaveApplicationForm').addEventListener('submit', submitLeaveApplication);
+        }
+
+        function lookupFaculty() {
+            const facultyId = document.getElementById('facultyId').value.trim().toUpperCase();
+
+            if (facultyId && facultyData[facultyId]) {
+                const faculty = facultyData[facultyId];
+                document.getElementById('facultyName').value = faculty.name;
+                document.getElementById('facultyDepartment').value = faculty.department;
+                document.getElementById('employeeCode').value = faculty.employeeCode;
+
+                clearError('facultyId');
+            } else if (facultyId) {
+                showError('facultyId', 'Faculty ID not found in system');
+                document.getElementById('facultyName').value = '';
+                document.getElementById('facultyDepartment').value = '';
+                document.getElementById('employeeCode').value = '';
+            }
+        }
+
+        function selectLeaveType(type) {
+            selectedLeaveType = type;
+            document.getElementById('leaveType').value = type;
+
+            // Update UI
+            document.querySelectorAll('.leave-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+
+            clearError('leaveType');
+            updateLeaveSummary();
+        }
+
+        function updateDateRange() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (fromDate) {
+                document.getElementById('toDate').min = fromDate;
+            }
+
+            if (fromDate && toDate) {
+                const from = new Date(fromDate);
+                const to = new Date(toDate);
+
+                if (to < from) {
+                    showError('toDate', 'To date cannot be earlier than from date');
+                    return;
+                }
+
+                const diffTime = Math.abs(to - from);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+                document.getElementById('leaveDuration').textContent = `Duration: ${diffDays} day(s)`;
+
+                clearError('fromDate');
+                clearError('toDate');
+                updateLeaveSummary();
+            }
+        }
+
+        function updateLeaveSummary() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (selectedLeaveType && fromDate && toDate) {
+                const from = new Date(fromDate);
+                const to = new Date(toDate);
+                const diffDays = Math.ceil(Math.abs(to - from) / (1000 * 60 * 60 * 24)) + 1;
+
+                document.getElementById('summaryType').textContent = selectedLeaveType;
+                document.getElementById('summaryDuration').textContent = `${diffDays} day(s)`;
+                document.getElementById('summaryFrom').textContent = from.toLocaleDateString();
+                document.getElementById('summaryTo').textContent = to.toLocaleDateString();
+
+                document.getElementById('leaveSummary').style.display = 'block';
+            } else {
+                document.getElementById('leaveSummary').style.display = 'none';
+            }
+        }
+
+        function updateCharacterCount() {
+            const textarea = document.getElementById('reason');
+            const counter = document.getElementById('reasonCount');
+            const count = textarea.value.length;
+
+            counter.textContent = count;
+            counter.className = 'character-counter';
+
+            if (count > 800) {
+                counter.classList.add('warning');
+            }
+            if (count > 950) {
+                counter.classList.add('error');
+            }
+        }
+
+        function updateHandoverCount() {
+            const textarea = document.getElementById('handoverDetails');
+            const counter = document.getElementById('handoverCount');
+            const count = textarea.value.length;
+
+            counter.textContent = count;
+            counter.className = 'character-counter';
+
+            if (count > 400) {
+                counter.classList.add('warning');
+            }
+            if (count > 475) {
+                counter.classList.add('error');
+            }
+        }
+
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            selectedFiles = files;
+
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+
+            if (files.length > 0) {
+                const listContainer = document.createElement('div');
+                listContainer.className = 'space-y-2';
+
+                files.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'flex items-center justify-between bg-gray-50 rounded-lg p-3';
+                    fileItem.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <div>
+                                <div class="font-medium text-gray-800">${file.name}</div>
+                                <div class="text-sm text-gray-500">${formatFileSize(file.size)}</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    `;
+                    listContainer.appendChild(fileItem);
+                });
+
+                fileList.appendChild(listContainer);
+            }
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+
+            // Update file input
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            document.getElementById('supportingDocs').files = dt.files;
+
+            // Update display
+            handleFileUpload({ target: { files: selectedFiles } });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            // Faculty ID validation
+            const facultyId = document.getElementById('facultyId').value.trim();
+            if (!facultyId) {
+                showError('facultyId', 'Faculty ID is required');
+                isValid = false;
+            } else if (!facultyData[facultyId.toUpperCase()]) {
+                showError('facultyId', 'Invalid Faculty ID');
+                isValid = false;
+            }
+
+            // Leave type validation
+            if (!selectedLeaveType) {
+                showError('leaveType', 'Please select a leave type');
+                isValid = false;
+            }
+
+            // Date validation
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (!fromDate) {
+                showError('fromDate', 'From date is required');
+                isValid = false;
+            }
+
+            if (!toDate) {
+                showError('toDate', 'To date is required');
+                isValid = false;
+            }
+
+            if (fromDate && toDate && new Date(toDate) < new Date(fromDate)) {
+                showError('toDate', 'To date cannot be earlier than from date');
+                isValid = false;
+            }
+
+            // Reason validation
+            const reason = document.getElementById('reason').value.trim();
+            if (!reason) {
+                showError('reason', 'Reason for leave is required');
+                isValid = false;
+            } else if (reason.length < 10) {
+                showError('reason', 'Reason must be at least 10 characters long');
+                isValid = false;
+            }
+
+            // Terms validation
+            if (!document.getElementById('termsAccepted').checked) {
+                showError('terms', 'Please accept the terms and conditions');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        async function submitLeaveApplication(event) {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                showNotification('Please fix the errors in the form', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
+
+            try {
+                // Prepare form data
+                const formData = new FormData();
+
+                // Add form fields matching MySQL table structure
+                formData.append('faculty_id', document.getElementById('facultyId').value.trim().toUpperCase());
+                formData.append('leave_date', document.getElementById('fromDate').value);
+                formData.append('leave_type', selectedLeaveType);
+                formData.append('reason', document.getElementById('reason').value.trim());
+                formData.append('status', 'Pending'); // Default status
+
+                // Additional fields (you can extend the database table to include these)
+                formData.append('to_date', document.getElementById('toDate').value);
+                formData.append('emergency_contact_name', document.getElementById('emergencyName').value.trim());
+                formData.append('emergency_contact_phone', document.getElementById('emergencyPhone').value.trim());
+                formData.append('handover_details', document.getElementById('handoverDetails').value.trim());
+
+                // Add files
+                selectedFiles.forEach((file, index) => {
+                    formData.append(`supporting_doc_${index}`, file);
+                });
+
+                // Submit to server
+                const response = await fetch('/api/leave-applications', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showNotification('Leave application submitted successfully! Application ID: ' + result.leave_id, 'success');
+
+                    // Clear form and draft
+                    resetForm();
+                    clearDraft();
+
+                    // Optionally redirect to applications list
+                    setTimeout(() => {
+                        // window.location.href = '/faculty/leave-applications';
+                    }, 3000);
+
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to submit application');
+                }
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                showNotification('Failed to submit application: ' + error.message, 'error');
+            } finally {
+                // Restore button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('leaveApplicationForm').reset();
+            selectedLeaveType = '';
+            selectedFiles = [];
+
+            // Clear UI states
+            document.querySelectorAll('.leave-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            document.getElementById('leaveSummary').style.display = 'none';
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('reasonCount').textContent = '0';
+            document.getElementById('handoverCount').textContent = '0';
+
+            // Clear faculty info
+            document.getElementById('facultyName').value = '';
+            document.getElementById('facultyDepartment').value = '';
+            document.getElementById('employeeCode').value = '';
+
+            // Clear all errors
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.classList.remove('show');
+            });
+
+            document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(input => {
+                input.classList.remove('error');
+            });
+
+            showNotification('Form reset successfully', 'info');
+        }
+
+        function saveDraft() {
+            const draftData = {
+                facultyId: document.getElementById('facultyId').value,
+                leaveType: selectedLeaveType,
+                fromDate: document.getElementById('fromDate').value,
+                toDate: document.getElementById('toDate').value,
+                reason: document.getElementById('reason').value,
+                emergencyName: document.getElementById('emergencyName').value,
+                emergencyPhone: document.getElementById('emergencyPhone').value,
+                handoverDetails: document.getElementById('handoverDetails').value,
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem('leaveApplicationDraft', JSON.stringify(draftData));
+            showNotification('Draft saved successfully', 'success');
+        }
+
+        function loadDraft() {
+            const draft = localStorage.getItem('leaveApplicationDraft');
+            if (draft) {
+                try {
+                    const draftData = JSON.parse(draft);
+
+                    // Load form data
+                    document.getElementById('facultyId').value = draftData.facultyId || '';
+                    document.getElementById('fromDate').value = draftData.fromDate || '';
+                    document.getElementById('toDate').value = draftData.toDate || '';
+                    document.getElementById('reason').value = draftData.reason || '';
+                    document.getElementById('emergencyName').value = draftData.emergencyName || '';
+                    document.getElementById('emergencyPhone').value = draftData.emergencyPhone || '';
+                    document.getElementById('handoverDetails').value = draftData.handoverDetails || '';
+
+                    if (draftData.leaveType) {
+                        selectLeaveType(draftData.leaveType);
+                    }
+
+                    // Trigger lookups and updates
+                    if (draftData.facultyId) {
+                        lookupFaculty();
+                    }
+
+                    updateDateRange();
+                    updateCharacterCount();
+                    updateHandoverCount();
+
+                    showNotification('Draft loaded successfully', 'info');
+                } catch (error) {
+                    console.error('Error loading draft:', error);
+                }
+            }
+        }
+
+        function clearDraft() {
+            localStorage.removeItem('leaveApplicationDraft');
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+
+            if (field) {
+                field.classList.add('error');
+            }
+
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+        }
+
+        function clearError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+
+            if (field) {
+                field.classList.remove('error');
+            }
+
+            if (errorElement) {
+                errorElement.classList.remove('show');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Auto-save draft every 30 seconds
+        setInterval(() => {
+            const facultyId = document.getElementById('facultyId').value;
+            const reason = document.getElementById('reason').value;
+
+            if (facultyId || reason) {
+                saveDraft();
+            }
+        }, 30000);
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'98279d63f0385472',t:'MTc1ODQzNzI4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

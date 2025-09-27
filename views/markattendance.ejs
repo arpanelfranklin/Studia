@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #F0EDEE;
+            color: #07393C;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        img {
+            border: 4px solid #07393C;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Scan this QR to mark attendance</h1>
+    <img src="<%= qrDataUrl %>" alt="QR Code for Attendance" />
+</body>
+
+</html>

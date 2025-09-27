@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studia - Faculty Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .coral-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .teal-gradient {
+            background: linear-gradient(135deg, #4ECDC4 0%, #6EE7E0 100%);
+        }
+
+        .coral-teal-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        .dropdown {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.show {
+            transform: translateX(0);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 8px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-button {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            border-color: #FF6B6B;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(255, 107, 107, 0.2);
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-item {
+            display: flex;
+            /* items-center; */
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-item:hover {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg">
+    <!-- Navigation Bar -->
+    <nav class="bg-white card-shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="text-5xl mx-auto mb-4 flex items-center justify-center">
+                        <i class="fa-solid fa-circle-nodes bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent"
+                            style="font-size: 1.5rem; margin-top: 13px;"></i>
+                    </div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent cursor-pointer">
+                        Studia</h1>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/facultylogin"
+                        class="nav-item  text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            <span>Home</span>
+                        </div>
+                    </a>
+
+                    <a href="/facultytimetable"
+                        class="nav-item active text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>Timetable</span>
+                        </div>
+                    </a>
+
+                    <a href="#"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            <span>Students</span>
+                        </div>
+                    </a>
+
+                    <a href="#"
+                        class="nav-item text-gray-700 hover:text-red-400 font-medium px-3 py-2 rounded-lg transition-colors"
+                        onclick="setActive(this)">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                            <span>Grades</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Right Side Items -->
+                <div class="flex items-center space-x-4">
+
+
+
+                    <!-- User Profile Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleProfile()"
+                            class="flex items-center space-x-2 p-2 text-gray-600 hover:text-red-400 transition-colors">
+                            <div
+                                class="w-8 h-8 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="profileDropdown"
+                            class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border">
+                            <div class="p-3 border-b">
+                                <div class="font-medium text-gray-800">Dr. Rajesh Kumar</div>
+                                <div class="text-sm text-gray-600">Computer Science Dept.</div>
+                            </div>
+                            <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View
+                                    Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help &
+                                    Support</a>
+                            </div>
+                            <div class="border-t py-2">
+                                <button onclick="signOut()"
+                                    class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                            </path>
+                                        </svg>
+                                        <span>Sign Out</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()"
+                        class="md:hidden p-2 text-gray-600 hover:text-red-400 transition-colors">
+                        <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50">
+            <div class="p-4 border-b">
+                <div class="flex items-center">
+                    <div class="coral-teal-gradient w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-bold text-lg">S</span>
+                    </div>
+                    <h1
+                        class="text-xl font-bold bg-gradient-to-r from-red-400 to-teal-400 bg-clip-text text-transparent">
+                        Studia</h1>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="space-y-2">
+                    <a href="#"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                            </path>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                        <span>Courses</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        <span>Students</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-red-50 hover:text-red-400 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
+                        </svg>
+                        <span>Grades</span>
+                    </a>
+                </div>
+                <div class="mt-6 pt-6 border-t">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div
+                            class="w-10 h-10 coral-teal-gradient rounded-full flex items-center justify-center text-white font-semibold">
+                            DR
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">Dr. Rajesh Kumar</div>
+                            <div class="text-sm text-gray-600">Computer Science</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">View Profile</a>
+                        <a href="#" class="block p-2 text-gray-700 hover:bg-gray-100 rounded">Settings</a>
+                        <button onclick="signOut()"
+                            class="block w-full text-left p-2 text-red-600 hover:bg-red-50 rounded">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()">
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Quick Actions -->
+                <div class="dashboard-card card-shadow hover-lift fade-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="action-button" onclick="markAttendance()">
+                            <svg class="w-8 h-8 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="text-sm font-medium text-gray-800">Mark Attendance</div>
+                        </div>
+
+                        <div class="action-button" onclick="gradeAssignments()">
+                            <svg class="w-8 h-8 text-green-500 mx-auto mb-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>
+                            <div class="text-sm font-medium text-gray-800">Grade Assignments</div>
+                        </div>
+
+                        <a href="/facultytimetable" class="action-button">
+                            <svg class="w-8 h-8 text-orange-500 mx-auto mb-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <div class="text-sm font-medium text-gray-800">Schedule Timetable</div>
+                        </a>
+
+
+                        <div class="action-button">
+                            <h1 class="w-8 h-8 text-purple-500 mx-auto mb-2"
+                                style="font-size: 1.5rem; font-weight: bold;">
+                                <%= totalClassrooms %>
+                            </h1>
+                            <div class="text-sm font-medium text-gray-800">Total classroom</div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="max-w-7xl mx-auto px-6 py-8 dashboard-card card-shadow hover-lift fade-in">
+                    <!-- Header -->
+                    <div class="card-minimal rounded-xl p-6 mb-6 form-animation">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-2xl font-semibold text-slate-900 mb-1">Timetable Management</h1>
+                                <p class="text-slate-600">Add and manage class schedules for different batches</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Add Timetable Form -->
+                    <div id="addForm" class="card-minimal rounded-xl p-6 mb-6 form-animation"
+                        style="animation-delay: 0.1s;">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-semibold text-slate-900">Add New Timetable Entry</h2>
+                            <button class="text-slate-400 hover:text-slate-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <form action="/addtimetable" id="timetableForm" method="post"
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Timetable ID -->
+
+
+                            <!-- Batch ID -->
+                            <div>
+                                <label for="batchId" class="block text-sm font-medium text-slate-700 mb-2">Batch
+                                    ID</label>
+                                <select id="batchId" name="batch_id"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                                    <option value="">Select Batch</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                </select>
+                            </div>
+
+                            <!-- Day of Week -->
+                            <div>
+                                <label for="dayOfWeek" class="block text-sm font-medium text-slate-700 mb-2">Day of
+                                    Week</label>
+
+                                <select id="dayOfWeek" name="day_of_week"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                                    <option value="">Select Day</option>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                </select>
+                            </div>
+
+                            <!-- Subject -->
+                            <div>
+                                <label for="subject"
+                                    class="block text-sm font-medium text-slate-700 mb-2">Subject</label>
+                                <input type="text" id="subject" name="subject_name" placeholder="e.g., Data Structures"
+                                    list="subjectSuggestions"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                                <datalist id="subjectSuggestions">
+                                    <option value="Data Structures">
+                                    <option value="Database Management">
+                                    <option value="Operating Systems">
+                                    <option value="Computer Networks">
+                                    <option value="Machine Learning">
+                                    <option value="Software Engineering">
+                                    <option value="Algorithms">
+                                    <option value="Computer Graphics">
+                                    <option value="Artificial Intelligence">
+                                    <option value="Web Development">
+                                </datalist>
+                            </div>
+
+                            <!-- Start Time -->
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-slate-700 mb-2">Start
+                                    Time</label>
+                                <input type="time" id="startTime" name="start_time"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                            </div>
+
+                            <!-- End Time -->
+                            <div>
+                                <label for="endTime" class="block text-sm font-medium text-slate-700 mb-2">End
+                                    Time</label>
+                                <input type="time" id="endTime" name="end_time"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                            </div>
+
+                            <!-- Classroom -->
+                            <div>
+                                <label for="classroom"
+                                    class="block text-sm font-medium text-slate-700 mb-2">Classroom</label>
+                                <select id="classroom" name="classroom"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                                    <option value="">Select Classroom</option>
+                                    <option value="A-LH 201">A-LH 201 (Lecture Hall)</option>
+                                    <option value="A-LH 202">A-LH 202 (Lecture Hall)</option>
+                                    <option value="B-CR 105">B-CR 105 (Classroom)</option>
+                                    <option value="B-CR 106">B-CR 106 (Classroom)</option>
+                                    <option value="C-LAB 301">C-LAB 301 (Computer Lab)</option>
+                                    <option value="C-LAB 302">C-LAB 302 (Computer Lab)</option>
+                                    <option value="C-LAB 303">C-LAB 303 (Computer Lab)</option>
+                                    <option value="A-TR 201">A-TR 201 (Tutorial Room)</option>
+                                    <option value="A-TR 202">A-TR 202 (Tutorial Room)</option>
+                                    <option value="A-SR 401">A-SR 401 (Seminar Room)</option>
+                                </select>
+                            </div>
+
+                            <!-- Faculty Name -->
+                            <div>
+                                <label for="facultyName" class="block text-sm font-medium text-slate-700 mb-2">Faculty
+                                    Name</label>
+                                <input type="text" id="facultyName" name="faculty_name" value="Prof. Dr. Johnson"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                            </div>
+                            <!-- Faculty ID -->
+                            <div>
+                                <label for="facultyID" class="block text-sm font-medium text-slate-700 mb-2">Faculty
+                                    ID</label>
+                                <input type="text" id="facultyID" name="faculty_id" value="FAC0001"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                            </div>
+
+                            <!-- Type -->
+                            <div>
+                                <label for="type" class="block text-sm font-medium text-slate-700 mb-2">Type</label>
+                                <select id="type" name="type"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200"
+                                    required>
+                                    <option value="">Select Type</option>
+                                    <option value="L">Lecture (L)</option>
+                                    <option value="T">Tutorial (T)</option>
+                                    <option value="P">Practical (P)</option>
+                                </select>
+                            </div>
+
+
+                            <button type="submit"
+                                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                Add Timetable Entry
+                            </button>
+                        </form>
+                    </div>
+
+
+
+                </div>
+            </div>
+            <!-- Right Column -->
+            <!-- Timetable Entries in Card Style -->
+            <div class="space-y-6">
+                <div class="dashboard-card card-shadow hover-lift fade-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Today's Schedule</h3>
+                    <div class="space-y-3">
+                        <% result.forEach(row=> { %>
+                            <div class="schedule-item bg-blue-50">
+                                <div class="flex items-center space-x-3">
+                                    <!-- Dot color can depend on type -->
+                                    <div class="w-3 h-3 
+                            <% if(row.type === 'Lecture'){ %> bg-blue-500 <% } else if(row.type === 'Lab'){ %> bg-green-500 <% } else { %> bg-orange-500 <% } %> 
+                            rounded-full"></div>
+
+                                    <!-- Subject + Room + Faculty -->
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-800">
+                                            <%= row.subject_name %>
+                                        </div>
+                                        <div class="text-sm text-gray-600">
+                                            Room: <%= row.classroom %> • Faculty: <%= row.faculty_name %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Start - End Time -->
+                                    <div class="text-sm text-gray-600">
+                                        <%= row.start_time %> - <%= row.end_time %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+            </div>
+
+
+</body>
+
+</html>

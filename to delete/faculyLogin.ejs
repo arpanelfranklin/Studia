@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Login - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-minimal {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-minimal {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-focus:focus {
+            border-color: #1e293b;
+            box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
+        }
+
+        .login-animation {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="gradient-minimal min-h-screen flex items-center justify-center p-6">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="relative w-full max-w-md">
+        <!-- Header -->
+        <div class="text-center mb-8 login-animation">
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+                    <div class="w-6 h-6 bg-slate-800 rounded-lg"></div>
+                </div>
+                <span class="text-white font-semibold text-2xl">Studia</span>
+            </div>
+            <h1 class="text-3xl font-light text-white mb-2">Faculty Access</h1>
+            <p class="text-white/60">Sign in to your faculty dashboard</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="card-minimal rounded-2xl p-8 login-animation" style="animation-delay: 0.2s;">
+            <form id="loginForm" class="space-y-6" action="/facultylogin" method="POST">
+                <!-- Faculty ID Field -->
+                <div>
+                    <label for="facultyemail" class="block text-sm font-medium text-slate-700 mb-2">Faculty ID</label>
+                    <input type="text" id="facultyemail" name="facultyemail" placeholder="Enter your faculty Email ID"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200 text-slate-900"
+                        required>
+                </div>
+
+
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
+                            class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none input-focus transition-all duration-200 text-slate-900 pr-12"
+                            required>
+                        <button type="button" onclick="togglePassword()"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <!-- Login Button -->
+                <button type="submit"
+                    class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
+                    <span id="loginText">Access Portal</span>
+                    <div id="loginSpinner" class="hidden flex items-center justify-center">
+                        <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    </div>
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 login-animation" style="animation-delay: 0.4s;">
+            <p class="text-white/60 text-sm">
+                Are you a Student?
+                <a href="/" class="text-white hover:text-white/80 font-medium transition-colors">Student
+                    Lo</a>
+            </p>
+            <p class="text-white/40 text-xs mt-2">
+                Faculty Portal • Secure Access
+            </p>
+        </div>
+
+        <!-- Success Message (Hidden by default) -->
+        <div id="successMessage"
+            class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+            <div class="flex items-center space-x-2">
+                <div class="w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+                <span>Login successful! Accessing portal...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                `;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const successMessage = document.getElementById('successMessage');
+
+            // Show loading state
+            loginText.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
+
+            // Simulate login process
+            setTimeout(() => {
+                // Hide loading state
+                loginText.classList.remove('hidden');
+                loginSpinner.classList.add('hidden');
+
+                // Show success message
+                successMessage.classList.remove('hidden');
+
+                // Simulate redirect to faculty dashboard
+                setTimeout(() => {
+                    // In a real application, you would redirect to the faculty dashboard
+                    // window.location.href = '/faculty-dashboard';
+                    alert('Login successful! In a real app, you would be redirected to the faculty portal.');
+                    successMessage.classList.add('hidden');
+                }, 2000);
+            }, 1500);
+        });
+
+        // Add some interactive feedback
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.classList.add('scale-[1.02]');
+            });
+
+            input.addEventListener('blur', function () {
+                this.parentElement.classList.remove('scale-[1.02]');
+            });
+        });
+
+        // Add department selection feedback
+        document.getElementById('department').addEventListener('change', function () {
+            if (this.value) {
+                this.classList.add('text-slate-900');
+                this.classList.remove('text-slate-500');
+            } else {
+                this.classList.add('text-slate-500');
+                this.classList.remove('text-slate-900');
+            }
+        });
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'979f9508245c5970',t:'MTc1NzAxMDg3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
